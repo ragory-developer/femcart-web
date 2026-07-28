@@ -25,9 +25,6 @@ export const metadata: Metadata = {
     "Femcart — Premium Women's Intimate Apparel & Lifestyle E-commerce Platform",
   description:
     "Femcart is a premium online shopping platform dedicated to women's intimate apparel, shapewear, activewear, and essential lifestyle products.",
-  icons: {
-    icon: "/icon.png",
-  },
 };
 
 import NavigationProvider from "@/components/providers/NavigationProvider";

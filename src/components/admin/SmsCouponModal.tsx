@@ -340,7 +340,7 @@ export function SmsCouponModal({
                     Insufficient Funds
                   </p>
                   <p className="text-xs text-pink-700 dark:text-pink-400">
-                    Cost: ?{totalCost.toFixed(2)} / Balance: ?
+                    Cost: Tk {totalCost.toFixed(2)} / Balance: ?
                     {walletBalance?.toFixed(2)}
                   </p>
                 </div>
@@ -350,13 +350,13 @@ export function SmsCouponModal({
                 <div>
                   <p className="text-xs text-gray-500 mb-0.5">Campaign Cost</p>
                   <p className="text-base font-semibold text-gray-900 dark:text-white">
-                    ?{totalCost.toFixed(2)}
+                    Tk {totalCost.toFixed(2)}
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-gray-500 mb-0.5">Wallet Balance</p>
                   <p className="text-base font-semibold text-emerald-600 dark:text-emerald-400">
-                    ?{walletBalance?.toFixed(2)}
+                    Tk {walletBalance?.toFixed(2)}
                   </p>
                 </div>
               </div>

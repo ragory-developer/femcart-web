@@ -568,7 +568,7 @@ export default function FacebookManagerPage() {
                   <option value="">-- Choose a product to advertise --</option>
                   {products.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.name} - ?{p.price}
+                      {p.name} - Tk {p.price}
                     </option>
                   ))}
                 </select>

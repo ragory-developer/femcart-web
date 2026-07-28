@@ -229,7 +229,7 @@ export default function AdminCouponsPage() {
                   Total Discount Given
                 </span>
                 <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
-                  ?{(reportData.totalDiscount || 0).toFixed(2)}
+                  Tk {(reportData.totalDiscount || 0).toFixed(2)}
                 </span>
               </div>
             </div>
@@ -479,11 +479,11 @@ export default function AdminCouponsPage() {
                         <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
                           {coupon.type === "PERCENT"
                             ? `${coupon.discount}% OFF`
-                            : `?${coupon.discount} OFF`}
+                            : `Tk ${coupon.discount} OFF`}
                         </span>
                         <span className="w-1 h-1 rounded-full bg-gray-300"></span>
                         <span className="text-[11px] font-bold text-gray-500 uppercase">
-                          Min ?{coupon.minOrder}
+                          Min Tk {coupon.minOrder}
                         </span>
                         <span className="w-1 h-1 rounded-full bg-gray-300"></span>
                         <span className="text-[11px] font-bold text-blue-500 uppercase">

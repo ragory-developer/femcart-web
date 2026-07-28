@@ -699,7 +699,7 @@ export default function AdminLocationsPage() {
                               </button>
                             </td>
                             <td className="px-6 py-4 align-middle border border-gray-200 dark:border-gray-750 text-center font-medium text-gray-900 dark:text-white">
-                              ?{city.deliveryCharge ?? 0}
+                              Tk {city.deliveryCharge ?? 0}
                             </td>
                             <td className="px-6 py-4 align-middle border border-gray-200 dark:border-gray-750 text-center">
                               <span
@@ -800,7 +800,7 @@ export default function AdminLocationsPage() {
                                   </span>
                                 </td>
                                 <td className="px-6 py-4 align-middle border border-gray-200 dark:border-gray-750 text-center font-medium text-gray-900 dark:text-white">
-                                  ?{area.deliveryCharge ?? 0}
+                                  Tk {area.deliveryCharge ?? 0}
                                 </td>
                                 <td className="px-6 py-4 align-middle border border-gray-200 dark:border-gray-750 text-center">
                                   <span

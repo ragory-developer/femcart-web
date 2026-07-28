@@ -109,7 +109,7 @@ export default function WalletPage() {
                         Available Balance
                       </p>
                       <h2 className="text-4xl sm:text-5xl font-black tracking-tighter">
-                        ?{data.balance.toLocaleString()}
+                        Tk {data.balance.toLocaleString()}
                       </h2>
                     </div>
                     <div className="p-3 bg-white/10 backdrop-blur-md rounded-2xl">

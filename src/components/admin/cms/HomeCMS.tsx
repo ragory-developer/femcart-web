@@ -314,8 +314,18 @@ const AVAILABLE_COMPONENTS: ComponentDef[] = [
       { key: "title", label: "Section Title", type: "text" },
       { key: "subtitle", label: "Section Subtitle", type: "text" },
       {
+        key: "chatImage1",
+        label: "Left Chat Screenshot (Optional)",
+        type: "image",
+      },
+      {
+        key: "chatImage2",
+        label: "Right Chat Screenshot (Optional)",
+        type: "image",
+      },
+      {
         key: "chats",
-        label: "Chat Mockups (2 required)",
+        label: "Chat Mockups (Fallback if no images provided)",
         type: "array",
         arraySchema: [
           { key: "name", label: "Customer Name", type: "text" },

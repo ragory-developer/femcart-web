@@ -67,7 +67,7 @@ export default function GlobalWalletNotice() {
                 <p className="text-sm font-medium text-rose-600 dark:text-rose-400/80 mb-3">
                   Your wallet is currently at{" "}
                   <span className="font-bold underline">
-                    ?{balance?.toLocaleString()}
+                    Tk {balance?.toLocaleString()}
                   </span>
                   . If it drops to 0, SMS verification and global notifications
                   will completely halt!

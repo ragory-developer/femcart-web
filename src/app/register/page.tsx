@@ -84,7 +84,7 @@ function StepIndicator({ current }: { current: Step }) {
 const inputCls = (icon = true) =>
   "block w-full rounded-xl border border-gray-200 dark:border-gray-700 py-3.5 pl-11 pr-4 text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-pink-500 focus:outline-none focus:ring-4 focus:ring-pink-500/10 sm:text-sm bg-gray-50/50 dark:bg-gray-900/50 transition-all duration-300";
 const btnCls =
-  "w-full bg-gradient-to-r from-pink-600 to-pink-500 text-white font-bold py-3.5 rounded-xl hover:from-pink-500 hover:to-pink-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600 shadow-[0_8px_20px_rgba(220,38,38,0.25)] hover:shadow-[0_12px_25px_rgba(220,38,38,0.35)] transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:pointer-events-none mt-6 text-sm flex items-center justify-center gap-2";
+  "w-full bg-gradient-to-r from-pink-600 to-pink-500 text-white font-bold py-3.5 rounded-xl hover:from-pink-500 hover:to-pink-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600 shadow-[0_8px_20px_rgba(220,38,38,0.25)] hover:shadow-[0_12px_25px_rgba(220,38,38,0.35)] transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:pointer-events-none text-sm flex items-center justify-center gap-2";
 
 /* --- Main Page -------------------------------------------- */
 export default function RegisterPage() {
@@ -533,7 +533,7 @@ export default function RegisterPage() {
                     setStep(1);
                     setError("");
                   }}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium transition-all hover:bg-gray-200 dark:hover:bg-gray-700 text-sm shadow-sm"
+                  className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-bold transition-all hover:bg-gray-200 dark:hover:bg-gray-700 text-sm shadow-sm"
                 >
                   <ArrowLeft size={16} /> Back
                 </button>

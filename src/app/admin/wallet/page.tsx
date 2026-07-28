@@ -143,7 +143,7 @@ export default function WalletManagementPage() {
 
           <div className="flex items-end gap-3 mb-4">
             <span className="text-6xl font-black text-gray-900 dark:text-white tracking-tighter italic">
-              ?{balance !== null ? balance.toLocaleString() : "..."}
+              Tk {balance !== null ? balance.toLocaleString() : "..."}
             </span>
             <span className="text-base font-bold text-gray-400 mb-2.5 tracking-tight uppercase">
               Available Balance
@@ -355,7 +355,7 @@ export default function WalletManagementPage() {
                       onClick={() => setAmount(val.toString())}
                       className="py-2.5 text-xs font-black uppercase tracking-widest rounded-xl bg-gray-50 dark:bg-gray-800 border-2 border-transparent hover:border-emerald-500 text-gray-600 dark:text-gray-400 hover:text-emerald-500 transition-all"
                     >
-                      +?{val}
+                      +Tk {val}
                     </button>
                   ))}
                 </div>

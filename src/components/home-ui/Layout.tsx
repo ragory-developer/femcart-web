@@ -66,7 +66,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Navigation */}
       <nav
-        className={`sticky top-0 bg-white/95 backdrop-blur-md border-b border-pink-100 z-[90] transition-all duration-300 flex items-center ${scrolled ? "h-16 shadow-sm" : "h-[72px]"}`}
+        className={`sticky top-0 bg-white/95 backdrop-blur-md border-b z-[90] transition-shadow duration-300 flex items-center h-[72px] ${scrolled ? "border-pink-100 shadow-sm" : "border-pink-50"}`}
       >
         <div className="max-w-[1440px] mx-auto px-4 md:px-8 w-full flex justify-between items-center">
           {/* Logo (Left) */}

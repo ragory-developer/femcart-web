@@ -26,6 +26,9 @@ export default function AddToCartButton({
   const [added, setAdded] = useState(false);
   const addToCart = useCartStore((state) => state.addToCart);
 
+  const removeFromCart = useCartStore((state) => state.removeFromCart);
+  const cartItems = useCartStore((state) => state.items);
+
   const currentId = selectedVariant ? selectedVariant.id : product.id;
   const currentPrice = getActivePrice(selectedVariant || product);
   const currentName = selectedVariant
@@ -35,57 +38,68 @@ export default function AddToCartButton({
 
   // Allow adding main product when no variant is selected
   const isSelectionRequired = false;
+  
+  const isInCart = cartItems.some((item) => item.id === currentId);
 
   const handleBuyNow = (e: React.MouseEvent) => {
     if (isSelectionRequired) {
       e.preventDefault();
       return;
     }
-    addToCart({
-      id: currentId,
-      productId: product.id,
-      variantId: selectedVariant?.id,
-      variantName: selectedVariant ? currentName : undefined,
-      name: currentName,
-      price: currentPrice,
-      slug: product.slug,
-      image: currentImage,
-      quantity,
-    });
+    
+    if (!isInCart) {
+      addToCart({
+        id: currentId,
+        productId: product.id,
+        variantId: selectedVariant?.id,
+        variantName: selectedVariant ? currentName : undefined,
+        name: currentName,
+        price: currentPrice,
+        slug: product.slug,
+        image: currentImage,
+        quantity,
+      });
 
-    fpixel.event("AddToCart", {
-      content_name: currentName,
-      content_ids: [currentId],
-      content_type: "product",
-      value: currentPrice * quantity,
-      currency: "BDT",
-    });
+      fpixel.event("AddToCart", {
+        content_name: currentName,
+        content_ids: [currentId],
+        content_type: "product",
+        value: currentPrice * quantity,
+        currency: "BDT",
+      });
+    }
   };
 
-  const handleAdd = () => {
+  const handleToggleCart = () => {
     if (isSelectionRequired) return;
-    addToCart({
-      id: currentId,
-      productId: product.id,
-      variantId: selectedVariant?.id,
-      variantName: selectedVariant ? currentName : undefined,
-      name: currentName,
-      price: currentPrice,
-      slug: product.slug,
-      image: currentImage,
-      quantity,
-    });
+    
+    if (isInCart) {
+      removeFromCart(currentId);
+      setAdded(false);
+    } else {
+      addToCart({
+        id: currentId,
+        productId: product.id,
+        variantId: selectedVariant?.id,
+        variantName: selectedVariant ? currentName : undefined,
+        name: currentName,
+        price: currentPrice,
+        slug: product.slug,
+        image: currentImage,
+        quantity,
+      });
 
-    fpixel.event("AddToCart", {
-      content_name: currentName,
-      content_ids: [currentId],
-      content_type: "product",
-      value: currentPrice * quantity,
-      currency: "BDT",
-    });
+      fpixel.event("AddToCart", {
+        content_name: currentName,
+        content_ids: [currentId],
+        content_type: "product",
+        value: currentPrice * quantity,
+        currency: "BDT",
+      });
 
-    setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+      setAdded(true);
+      setTimeout(() => setAdded(false), 2000);
+    }
   };
 
   const totalPrice = currentPrice * quantity;
@@ -127,20 +141,20 @@ export default function AddToCartButton({
           <motion.button
             type="button"
             whileTap={{ scale: isSelectionRequired ? 1 : 0.95 }}
-            onClick={handleAdd}
-            disabled={added || isSelectionRequired}
+            onClick={handleToggleCart}
+            disabled={isSelectionRequired}
             className={`flex-1 min-h-[48px] sm:min-h-[56px] rounded-xl font-bold flex flex-row items-center justify-center gap-1.5 sm:gap-[clamp(0.25rem,1vw,0.5rem)] transition-all duration-300 shadow-sm text-[11px] sm:text-[clamp(0.875rem,2vw,1rem)] px-1 ${
-              added
-                ? "bg-emerald-50 text-emerald-600 border-2 border-emerald-500"
+              isInCart || added
+                ? "bg-rose-50 text-rose-600 border-2 border-rose-500 hover:bg-rose-100"
                 : isSelectionRequired
                   ? "bg-gray-100 text-gray-400 cursor-not-allowed border-2 border-dashed border-gray-200 dark:bg-gray-900 dark:border-gray-800"
                   : "bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
             }`}
           >
-            {added ? (
+            {isInCart || added ? (
               <>
                 <Check size={16} className="sm:w-5 sm:h-5 shrink-0" />
-                <span className="whitespace-nowrap">Added</span>
+                <span className="whitespace-nowrap">Remove from Cart</span>
               </>
             ) : (
               <>

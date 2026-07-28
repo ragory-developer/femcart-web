@@ -317,7 +317,7 @@ export default function OrdersPage() {
                               {order.status}
                             </span>
                             <span className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">
-                              ?{order.total}
+                              Tk {order.total}
                             </span>
                           </div>
                         </div>

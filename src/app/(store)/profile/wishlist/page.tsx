@@ -199,11 +199,11 @@ export default function WishlistPage() {
                         </Link>
                         <div className="mt-2 flex items-baseline gap-2">
                           <span className="font-black text-lg text-gray-900 dark:text-white">
-                            ?{item.product.specialPrice || item.product.price}
+                            Tk {item.product.specialPrice || item.product.price}
                           </span>
                           {item.product.specialPrice && (
                             <span className="text-sm font-bold text-gray-400 line-through">
-                              ?{item.product.price}
+                              Tk {item.product.price}
                             </span>
                           )}
                         </div>
