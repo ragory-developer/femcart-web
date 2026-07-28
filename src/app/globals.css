@@ -1,0 +1,147 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Editorial Red & Crisp White Color Scheme */
+  --color-olive: #450A0A; /* Red 950 */
+  --color-forest: #7F1D1D; /* Red 900 */
+  --color-moss: #B91C1C; /* Red 700 */
+  --color-lime: #E53935; /* Red 600 - Primary */
+  --color-apple: #EF4444; /* Red 500 */
+  --color-apple-dark: #C62828; /* Red 800 */
+  --color-apple-light: #FCA5A5; /* Red 300 */
+  --color-brand-red: #C93B1A; /* Keep for legacy */
+  --color-brand-red-dark: #A82E12; /* Keep for legacy */
+  --color-card-border: #F1F5F9; /* Slate 100 */
+  
+  /* Promo pastel backgrounds from reference */
+  --color-promo-blue: #E1F5FE;
+  --color-promo-green: #ECFDF5; /* Emerald 50 */
+  --color-promo-yellow: #FFF8E1;
+
+  /* Fluid Typography */
+  --text-fluid-xs: clamp(0.7rem, 0.65rem + 0.25vw, 0.875rem);
+  --text-fluid-sm: clamp(0.8rem, 0.75rem + 0.35vw, 1rem);
+  --text-fluid-base: clamp(0.875rem, 0.8rem + 0.5vw, 1.125rem);
+  --text-fluid-lg: clamp(1.125rem, 1rem + 0.7vw, 1.375rem);
+  --text-fluid-xl: clamp(1.375rem, 1.25rem + 1vw, 1.75rem);
+  --text-fluid-2xl: clamp(1.75rem, 1.5rem + 1.5vw, 2.25rem);
+  --text-fluid-3xl: clamp(2rem, 1.75rem + 2vw, 3rem);
+  --text-fluid-4xl: clamp(2.5rem, 2rem + 3vw, 4rem);
+
+  /* Fluid Spacing */
+  --spacing-fluid-xs: clamp(0.5rem, 0.35rem + 0.75vw, 0.75rem);
+  --spacing-fluid-sm: clamp(0.75rem, 0.6rem + 1vw, 1.25rem);
+  --spacing-fluid-md: clamp(1rem, 0.8rem + 1.5vw, 2rem);
+  --spacing-fluid-lg: clamp(1.5rem, 1.2rem + 2vw, 3rem);
+  --spacing-fluid-xl: clamp(2rem, 1.5rem + 3vw, 4.5rem);
+
+  /* Font mapping */
+  --font-display: var(--font-outfit);
+  --font-body: var(--font-manrope);
+  
+  /* Premium shadows */
+  --shadow-premium: 0 4px 20px rgba(0,0,0,0.04);
+  --shadow-premium-hover: 0 10px 30px rgba(0,0,0,0.08);
+  
+  /* Keep existing required colors to prevent breakage */
+  --color-primary: var(--color-lime);
+  --color-primary-hover: var(--color-apple-dark);
+  --color-secondary: var(--color-promo-yellow);
+  --color-dark: #111827; /* Gray 900 */
+  --color-light: #F9FAFB; /* Gray 50 */
+  --color-background: #FFFFFF; /* Pure White */
+  --color-foreground: #111827; /* Gray 900 */
+  --color-mid: #4B5563; /* Gray 600 */
+}
+
+@layer base {
+  html, body {
+    @apply overflow-x-hidden w-full;
+  }
+  body {
+    @apply bg-orange-50 text-stone-900 font-sans;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif font-medium text-stone-900;
+  }
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: var(--shadow-premium);
+}
+
+/* Scrollbar hide */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Entrance Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.fade-in {
+  animation: fadeIn 0.35s ease forwards;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.slide-up {
+  animation: slideUp 0.35s ease forwards;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  animation: shimmer 2.5s infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -10px, 0); }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float {
+    animation: none;
+    transform: none;
+  }
+}
+
+/* Marquee Animation */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+  will-change: transform;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+

@@ -1,0 +1,39 @@
+"use client";
+import React from "react";
+import * as LucideIcons from "lucide-react";
+
+export default function TrustStrip({
+  items = [],
+}: {
+  items?: { icon: string; text: string }[];
+}) {
+  const defaultItems = [
+    { icon: "Package", text: "Cash on Delivery" },
+    { icon: "ArrowLeftRight", text: "Instant Returns" },
+    { icon: "Truck", text: "Delivery within 48hrs" },
+    { icon: "CheckCircle", text: "Best Price Deal" },
+  ];
+
+  const displayItems = items && items.length > 0 ? items : defaultItems;
+
+  return (
+    <section className="max-w-[1440px] mx-auto px-4 md:px-6 mb-4 md:mb-12 -mt-12 md:-mt-16 relative z-20">
+      <div className="bg-white rounded-[16px] shadow-md border border-orange-200/50 py-6 px-4 md:px-8 grid grid-cols-2 md:flex md:flex-wrap md:justify-around items-center gap-4">
+        {displayItems.map((item, i) => {
+          const Icon =
+            (LucideIcons as any)[item.icon] || LucideIcons.CheckCircle;
+          return (
+            <div key={i} className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center text-pink-500">
+                <Icon size={20} strokeWidth={2} />
+              </div>
+              <span className="text-[12px] sm:text-[14px] text-text-pink-500 font-medium leading-tight">
+                {item.text}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
