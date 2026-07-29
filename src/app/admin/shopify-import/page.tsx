@@ -1,13 +1,13 @@
 "use client";
 
-import ConnectionTab from "@/components/admin/wp-import/ConnectionTab";
-import ImportProcessTab from "@/components/admin/wp-import/ImportProcessTab";
-import PreviewTab from "@/components/admin/wp-import/PreviewTab";
+import ConnectionTab from "@/components/admin/shopify-import/ConnectionTab";
+import ImportProcessTab from "@/components/admin/shopify-import/ImportProcessTab";
+import PreviewTab from "@/components/admin/shopify-import/PreviewTab";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link2, LayoutGrid, Terminal } from "lucide-react";
 
-export default function WpImportPage() {
+export default function ShopifyImportPage() {
   const [activeTab, setActiveTab] = useState("connection");
 
   const tabs = [
@@ -20,10 +20,10 @@ export default function WpImportPage() {
     <div className="p-6 md:p-10 max-w-[1400px] mx-auto space-y-8">
       <div>
         <h1 className="text-3xl md:text-4xl font-black tracking-tight text-gray-900 flex items-center gap-3">
-          WordPress Import Center
+          Shopify Import Center
         </h1>
         <p className="text-gray-500 mt-2 text-sm md:text-base font-medium">
-          Connect your WooCommerce store and seamlessly synchronize products and orders.
+          Connect your Shopify store using an Admin API Token to seamlessly synchronize products and orders.
         </p>
       </div>
 
@@ -43,7 +43,7 @@ export default function WpImportPage() {
               >
                 {isActive && (
                   <motion.div
-                    layoutId="active-tab"
+                    layoutId="shopify-active-tab"
                     className="absolute inset-0 bg-white rounded-xl shadow-sm border border-gray-200/50"
                     initial={false}
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}

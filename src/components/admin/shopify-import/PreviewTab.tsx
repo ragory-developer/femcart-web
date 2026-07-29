@@ -35,7 +35,7 @@ export default function PreviewTab() {
     setLoading(true);
     try {
       const res = await fetch(
-        `${API_URL}/api/wordpress/products?page=${p}&per_page=10`,
+        `${API_URL}/api/shopify/products?page=${p}&per_page=10`,
         { headers: { Authorization: `Bearer ${getToken()}` } },
       );
       
@@ -43,7 +43,7 @@ export default function PreviewTab() {
       
       if (!res.ok) {
         // If there are no settings configured yet, just fail silently and show empty state
-        if (data?.message === 'No WordPress settings configured') {
+        if (data?.message === 'No shopify settings configured') {
           setProducts([]);
           return;
         }
@@ -83,7 +83,7 @@ export default function PreviewTab() {
     if (selectedIds.size === 0) return;
     setImporting(true);
     try {
-      const res = await fetch(`${API_URL}/api/wordpress/import/selected`, {
+      const res = await fetch(`${API_URL}/api/shopify/import/selected`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -107,7 +107,7 @@ export default function PreviewTab() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-            <Package size={20} className="text-emerald-600" /> Preview WooCommerce Products
+            <Package size={20} className="text-emerald-600" /> Preview Shopify Products
           </h2>
           <p className="text-sm text-gray-500 mt-1">
             Browse products directly from your connected store before importing.
@@ -145,7 +145,7 @@ export default function PreviewTab() {
                 <tr>
                   <td colSpan={6} className="px-6 py-20 text-center text-gray-400">
                     <Loader2 size={32} className="animate-spin mx-auto mb-3 text-emerald-500" />
-                    <p className="font-medium text-gray-500">Fetching products from WooCommerce...</p>
+                    <p className="font-medium text-gray-500">Fetching products from Shopify...</p>
                   </td>
                 </tr>
               ) : products.length === 0 ? (

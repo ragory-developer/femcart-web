@@ -1,40 +1,38 @@
 "use client";
 import { API_URL } from "@/lib/config";
 import { toast } from "sonner";
-import { Loader2, Link2, Key, Lock, Server } from "lucide-react";
-import { useEffect, useState } from "react";
-
-function getToken() {
-  return typeof window !== "undefined"
-    ? localStorage.getItem("femcart_access_token") ||
-        localStorage.getItem("token") ||
-        ""
-    : "";
-}
+import { Loader2, Link2, Key, Server } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function ConnectionTab() {
   const [loading, setLoading] = useState(false);
   const [testing, setTesting] = useState(false);
 
   const [formData, setFormData] = useState({
-    siteUrl: "",
-    consumerKey: "",
-    consumerSecret: "",
-    apiVersion: "wc/v3",
+    shopUrl: "",
+    accessToken: "",
+    apiVersion: "2024-01",
   });
 
+  function getToken() {
+    return typeof window !== "undefined"
+      ? localStorage.getItem("femcart_access_token") ||
+          localStorage.getItem("token") ||
+          ""
+      : "";
+  }
+
   useEffect(() => {
-    fetch(`${API_URL}/api/wordpress/settings`, {
+    fetch(`${API_URL}/api/shopify/settings`, {
       headers: { Authorization: `Bearer ${getToken()}` },
     })
       .then((res) => res.json())
       .then((json) => {
-        if (json && json.data && json.data.siteUrl) {
+        if (json && json.data && json.data.shopUrl) {
           setFormData({
-            siteUrl: json.data.siteUrl,
-            consumerKey: json.data.consumerKey,
-            consumerSecret: "*****",
-            apiVersion: json.data.apiVersion || "wc/v3",
+            shopUrl: json.data.shopUrl,
+            accessToken: json.data.accessToken || "*****",
+            apiVersion: json.data.apiVersion || "2024-01",
           });
         }
       })
@@ -51,7 +49,7 @@ export default function ConnectionTab() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/wordpress/settings`, {
+      const res = await fetch(`${API_URL}/api/shopify/settings`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,13 +70,13 @@ export default function ConnectionTab() {
   const handleTestConnection = async () => {
     setTesting(true);
     try {
-      const res = await fetch(`${API_URL}/api/wordpress/test`, {
+      const res = await fetch(`${API_URL}/api/shopify/test`, {
         method: "POST",
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Connection failed");
-      toast.success("Connection successful! WooCommerce API is reachable.");
+      toast.success("Connection successful! Shopify API is reachable.");
     } catch (err: any) {
       toast.error(err.message || "Connection failed.");
     } finally {
@@ -90,18 +88,17 @@ export default function ConnectionTab() {
     <div className="max-w-2xl space-y-6">
       <div>
         <h2 className="text-xl font-bold text-gray-900">
-          WooCommerce API Credentials
+          Shopify API Credentials
         </h2>
         <p className="text-sm text-gray-500 mt-1">
-          Enter your website URL, Consumer Key, and Consumer Secret to connect
-          with WooCommerce.
+          Enter your Shop URL and Admin API Access Token to securely connect your Shopify store.
         </p>
       </div>
 
       <form onSubmit={handleSave} className="space-y-5">
         <div className="space-y-1.5">
           <label className="block text-sm font-semibold text-gray-700">
-            Site URL
+            Shop URL
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
@@ -109,10 +106,10 @@ export default function ConnectionTab() {
             </div>
             <input
               type="url"
-              name="siteUrl"
-              value={formData.siteUrl}
+              name="shopUrl"
+              value={formData.shopUrl}
               onChange={handleChange}
-              placeholder="https://example.com"
+              placeholder="https://your-store.myshopify.com"
               required
               className="w-full pl-10 pr-4 py-2.5 text-gray-900 bg-white border border-gray-200/80 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all shadow-sm"
             />
@@ -121,38 +118,18 @@ export default function ConnectionTab() {
 
         <div className="space-y-1.5">
           <label className="block text-sm font-semibold text-gray-700">
-            Consumer Key
+            Admin API Access Token
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
               <Key size={18} className="text-gray-400" />
             </div>
             <input
-              type="text"
-              name="consumerKey"
-              value={formData.consumerKey}
-              onChange={handleChange}
-              placeholder="ck_..."
-              required
-              className="w-full pl-10 pr-4 py-2.5 text-gray-900 bg-white border border-gray-200/80 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all shadow-sm font-mono text-sm"
-            />
-          </div>
-        </div>
-
-        <div className="space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700">
-            Consumer Secret
-          </label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-              <Lock size={18} className="text-gray-400" />
-            </div>
-            <input
               type="password"
-              name="consumerSecret"
-              value={formData.consumerSecret}
+              name="accessToken"
+              value={formData.accessToken}
               onChange={handleChange}
-              placeholder="cs_..."
+              placeholder="shpat_..."
               required
               className="w-full pl-10 pr-4 py-2.5 text-gray-900 bg-white border border-gray-200/80 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all shadow-sm font-mono text-sm"
             />
@@ -173,8 +150,8 @@ export default function ConnectionTab() {
               onChange={handleChange}
               className="w-full pl-10 pr-4 py-2.5 text-gray-900 bg-white border border-gray-200/80 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all shadow-sm appearance-none"
             >
-              <option value="wc/v3">wc/v3 (Recommended)</option>
-              <option value="wc/v2">wc/v2 (Legacy)</option>
+              <option value="2024-01">2024-01 (Recommended)</option>
+              <option value="2023-10">2023-10 (Legacy)</option>
             </select>
           </div>
         </div>
@@ -191,7 +168,7 @@ export default function ConnectionTab() {
           <button
             type="button"
             onClick={handleTestConnection}
-            disabled={loading || testing || !formData.siteUrl}
+            disabled={loading || testing || !formData.shopUrl}
             className="flex-1 md:flex-none px-6 py-2.5 bg-white border border-gray-200 hover:border-emerald-500 hover:text-emerald-600 hover:bg-emerald-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-700 font-semibold rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
           >
             {testing ? <Loader2 size={18} className="animate-spin" /> : null}

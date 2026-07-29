@@ -4,9 +4,9 @@
   "description": "Femcart — Premium Women's Intimate Apparel & Lifestyle E-commerce Platform",
   "private": true,
   "scripts": {
-    "dev": "next dev -H 0.0.0.0",
+    "dev": "next dev -p 3006 -H 0.0.0.0",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3006",
     "lint": "eslint",
     "test": "vitest run"
   },

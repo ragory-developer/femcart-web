@@ -99,7 +99,7 @@ export default function ImportProcessTab() {
 
   const fetchTasks = useCallback(async () => {
     try {
-      const res = await fetch(`${API_URL}/api/wordpress/tasks`, {
+      const res = await fetch(`${API_URL}/api/shopify/tasks`, {
         headers: { Authorization: `Bearer ${getToken()}` },
       });
       const data = await res.json();
@@ -145,7 +145,7 @@ export default function ImportProcessTab() {
   const generateTasks = async () => {
     setGenerating(true);
     try {
-      const res = await fetch(`${API_URL}/api/wordpress/tasks/generate`, {
+      const res = await fetch(`${API_URL}/api/shopify/tasks/generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -171,7 +171,7 @@ export default function ImportProcessTab() {
     if (!confirm("Delete all tasks? Running tasks will not be stopped."))
       return;
     try {
-      await fetch(`${API_URL}/api/wordpress/tasks`, {
+      await fetch(`${API_URL}/api/shopify/tasks`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${getToken()}` },
       });
@@ -186,7 +186,7 @@ export default function ImportProcessTab() {
   const startTask = async (id: string) => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/wordpress/task/${id}/start`, {
+      const res = await fetch(`${API_URL}/api/shopify/task/${id}/start`, {
         method: "POST",
         headers: { Authorization: `Bearer ${getToken()}` },
       });
@@ -203,7 +203,7 @@ export default function ImportProcessTab() {
 
   const pauseTask = async (id: string) => {
     try {
-      await fetch(`${API_URL}/api/wordpress/task/${id}/pause`, {
+      await fetch(`${API_URL}/api/shopify/task/${id}/pause`, {
         method: "POST",
         headers: { Authorization: `Bearer ${getToken()}` },
       });
@@ -264,7 +264,7 @@ export default function ImportProcessTab() {
               >
                 <option value="AWS_S3">AWS S3 (Recommended)</option>
                 <option value="LOCAL">Local Server (/uploads)</option>
-                <option value="DIRECT_LINK">Direct WP Link (Fastest)</option>
+                <option value="DIRECT_LINK">Direct shopify Link (Fastest)</option>
               </select>
             </div>
           </div>

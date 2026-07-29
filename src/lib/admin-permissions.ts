@@ -230,6 +230,12 @@ export const navCategories = [
         icon: Download,
         permission: "IMPORT",
       },
+      {
+        label: "Shopify Import",
+        href: "/admin/shopify-import",
+        icon: Download,
+        permission: "IMPORT",
+      },
     ],
   },
 ];
