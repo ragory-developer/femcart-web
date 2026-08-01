@@ -43,60 +43,7 @@ interface DashboardStats {
   avgOrderValue: number;
 }
 
-// --- MOCK DATA ---
-const salesData = [
-  { name: "Mon", sales: 4000, purchases: 2400 },
-  { name: "Tue", sales: 3000, purchases: 1398 },
-  { name: "Wed", sales: 2000, purchases: 9800 },
-  { name: "Thu", sales: 2780, purchases: 3908 },
-  { name: "Fri", sales: 1890, purchases: 4800 },
-  { name: "Sat", sales: 2390, purchases: 3800 },
-  { name: "Sun", sales: 3490, purchases: 4300 },
-];
-
-const userData = [
-  { name: "Regular", value: 400 },
-  { name: "Guest", value: 300 },
-];
 const USER_COLORS = ["#3b82f6", "#f59e0b"];
-
-// NEW: Conversion Funnel Data
-const funnelData = [
-  { name: "Store Visits", users: 15400, fill: "#60a5fa" },
-  { name: "Added to Cart", users: 4200, fill: "#3b82f6" },
-  { name: "Reached Checkout", users: 1850, fill: "#2563eb" },
-  { name: "Purchased", users: 840, fill: "#1d4ed8" },
-];
-
-// NEW: Retention Data
-const retentionData = [
-  { name: "Mon", new: 120, returning: 80 },
-  { name: "Tue", new: 150, returning: 90 },
-  { name: "Wed", new: 180, returning: 120 },
-  { name: "Thu", new: 140, returning: 150 },
-  { name: "Fri", new: 200, returning: 180 },
-  { name: "Sat", new: 250, returning: 210 },
-  { name: "Sun", new: 300, returning: 240 },
-];
-
-const topProducts = [
-  { id: 1, name: "Organic Bananas", sold: 342, stock: 45, price: 2.99 },
-  { id: 2, name: "Whole Milk 1L", sold: 289, stock: 12, price: 1.49 },
-  { id: 3, name: "Fresh Strawberries", sold: 156, stock: 0, price: 4.99 },
-  { id: 4, name: "Avocado", sold: 142, stock: 8, price: 1.99 },
-];
-
-const recentOrders = [
-  { id: "ORD-001", customer: "John Doe", total: 45.99, status: "Delivered" },
-  { id: "ORD-002", customer: "Jane Smith", total: 12.5, status: "Processing" },
-  { id: "ORD-003", customer: "Guest User", total: 89.0, status: "Pending" },
-  {
-    id: "ORD-004",
-    customer: "Alice Johnson",
-    total: 24.99,
-    status: "Delivered",
-  },
-];
 
 const recentSupplierPurchases = [
   {
@@ -113,14 +60,6 @@ const recentSupplierPurchases = [
     cost: 180.5,
     status: "In Transit",
   },
-];
-
-// NEW: Divisional Data
-const divisionalSales = [
-  { city: "Dhaka", orders: 450, revenue: 12450 },
-  { city: "Chattogram", orders: 320, revenue: 9800 },
-  { city: "Sylhet", orders: 210, revenue: 5400 },
-  { city: "Rajshahi", orders: 150, revenue: 3200 },
 ];
 
 // NEW: Traffic Sources Data
@@ -144,12 +83,12 @@ function AdminDashboardComponent() {
     avgOrderValue: 0,
   });
   const [latestOrders, setLatestOrders] = useState<any[]>([]);
-  const [salesChartData, setSalesChartData] = useState<any[]>(salesData);
-  const [userChartData, setUserChartData] = useState<any[]>(userData);
-  const [funnelChartData, setFunnelChartData] = useState<any[]>(funnelData);
-  const [retentionChartData, setRetentionChartData] = useState<any[]>(retentionData);
-  const [divisionalSalesData, setDivisionalSalesData] = useState<any[]>(divisionalSales);
-  const [topProductsData, setTopProductsData] = useState<any[]>(topProducts);
+  const [salesChartData, setSalesChartData] = useState<any[]>([]);
+  const [userChartData, setUserChartData] = useState<any[]>([]);
+  const [funnelChartData, setFunnelChartData] = useState<any[]>([]);
+  const [retentionChartData, setRetentionChartData] = useState<any[]>([]);
+  const [divisionalSalesData, setDivisionalSalesData] = useState<any[]>([]);
+  const [topProductsData, setTopProductsData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -196,7 +135,7 @@ function AdminDashboardComponent() {
           total: Number(o.total) || 0,
           status: o.status.charAt(0) + o.status.slice(1).toLowerCase(),
         }));
-        setLatestOrders(formattedRecent.length ? formattedRecent : recentOrders);
+        setLatestOrders(formattedRecent);
 
         // 2. Sales vs Purchases weekly trend
         const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -212,7 +151,7 @@ function AdminDashboardComponent() {
         weeklySales.forEach(item => {
           item.purchases = Math.round(item.sales * 0.6);
         });
-        setSalesChartData(ordersList.length ? weeklySales : salesData);
+        setSalesChartData(weeklySales);
 
         // 3. User Accounts (Regular vs Guest)
         let guestCount = 0;
@@ -225,20 +164,20 @@ function AdminDashboardComponent() {
           }
         });
         const calculatedUserData = [
-          { name: "Regular", value: regularCount || 1 },
-          { name: "Guest", value: guestCount || 1 },
+          { name: "Regular", value: regularCount || 0 },
+          { name: "Guest", value: guestCount || 0 },
         ];
-        setUserChartData(regularCount || guestCount ? calculatedUserData : userData);
+        setUserChartData(calculatedUserData);
 
         // 4. Conversion Funnel
         const purchasesCount = ordersList.length;
         const calculatedFunnel = [
-          { name: "Store Visits", users: Math.max(purchasesCount * 18, 150), fill: "#60a5fa" },
-          { name: "Added to Cart", users: Math.max(purchasesCount * 5, 45), fill: "#3b82f6" },
-          { name: "Reached Checkout", users: Math.max(purchasesCount * 2, 18), fill: "#2563eb" },
+          { name: "Store Visits", users: Math.max(purchasesCount * 18, 0), fill: "#60a5fa" },
+          { name: "Added to Cart", users: Math.max(purchasesCount * 5, 0), fill: "#3b82f6" },
+          { name: "Reached Checkout", users: Math.max(purchasesCount * 2, 0), fill: "#2563eb" },
           { name: "Purchased", users: purchasesCount, fill: "#1d4ed8" },
         ];
-        setFunnelChartData(purchasesCount > 0 ? calculatedFunnel : funnelData);
+        setFunnelChartData(calculatedFunnel);
 
         // 5. Retention cohorts
         const userOrderCounts: Record<string, number> = {};
@@ -261,7 +200,7 @@ function AdminDashboardComponent() {
             }
           }
         });
-        setRetentionChartData(ordersList.length > 0 ? calculatedRetention : retentionData);
+        setRetentionChartData(calculatedRetention);
 
         // 6. Divisional Sales
         const cityMap: Record<string, { orders: number; revenue: number }> = {};
@@ -277,7 +216,7 @@ function AdminDashboardComponent() {
           .map(([city, data]) => ({ city, ...data }))
           .sort((a, b) => b.revenue - a.revenue)
           .slice(0, 5);
-        setDivisionalSalesData(calculatedDivisionalSales.length ? calculatedDivisionalSales : divisionalSales);
+        setDivisionalSalesData(calculatedDivisionalSales);
 
         // 7. Top Products
         const productSalesMap: Record<string, { name: string; sold: number; stock: number; price: number }> = {};
@@ -297,7 +236,7 @@ function AdminDashboardComponent() {
           .map(([id, data]) => ({ id, ...data }))
           .sort((a, b) => b.sold - a.sold)
           .slice(0, 4);
-        setTopProductsData(calculatedTopProducts.length ? calculatedTopProducts : topProducts);
+        setTopProductsData(calculatedTopProducts);
 
         setStats({
           products: totalProds,
