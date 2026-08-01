@@ -236,6 +236,12 @@ export const navCategories = [
         icon: Download,
         permission: "IMPORT",
       },
+      {
+        label: "Bulk Import",
+        href: "/admin/bulk-import",
+        icon: Download,
+        permission: "IMPORT",
+      },
     ],
   },
 ];
