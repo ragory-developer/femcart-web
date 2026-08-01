@@ -83,6 +83,8 @@ export default function ColumnMapper({
               className={`p-4 rounded-2xl border transition-all duration-200 ${
                 isSelected
                   ? "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 shadow-sm"
+                  : field.required 
+                  ? "bg-rose-50/30 dark:bg-rose-950/20 border-rose-400 dark:border-rose-900 shadow-[0_0_12px_rgba(244,63,94,0.15)] ring-1 ring-rose-500/20"
                   : "bg-gray-50/50 dark:bg-gray-900/30 border-dashed border-gray-200 dark:border-gray-800"
               }`}
             >
@@ -106,6 +108,8 @@ export default function ColumnMapper({
                 className={`w-full px-3 py-2 text-xs font-semibold rounded-xl border bg-transparent outline-none transition-all ${
                   mapping[field.key]
                     ? "border-emerald-200 dark:border-emerald-900 text-emerald-700 dark:text-emerald-400 focus:border-emerald-500"
+                    : field.required
+                    ? "border-rose-300 dark:border-rose-800 text-rose-600 dark:text-rose-400 focus:border-rose-500"
                     : "border-gray-250 dark:border-gray-800 text-gray-500 focus:border-blue-500"
                 }`}
               >

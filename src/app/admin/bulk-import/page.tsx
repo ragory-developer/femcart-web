@@ -12,6 +12,8 @@ import {
   CheckCircle,
   AlertCircle,
   HelpCircle,
+  Lock,
+  Download,
 } from "lucide-react";
 import { API_URL } from "@/lib/config";
 import ColumnMapper from "@/components/admin/bulk-import/ColumnMapper";
@@ -20,6 +22,7 @@ import ImportLogs from "@/components/admin/bulk-import/ImportLogs";
 export default function BulkImportPage() {
   const [activeTab, setActiveTab] = useState<"upload" | "history">("upload");
   const [importType, setImportType] = useState<"PRODUCTS" | "ORDERS">("PRODUCTS");
+  const [importPlatform, setImportPlatform] = useState<"CUSTOM" | "SHOPIFY" | "WOOCOMMERCE">("CUSTOM");
 
   // File states
   const [file, setFile] = useState<File | null>(null);
@@ -151,6 +154,7 @@ export default function BulkImportPage() {
     const formData = new FormData();
     formData.append("file", file!);
     formData.append("mapping", JSON.stringify(mapping));
+    formData.append("importPlatform", importPlatform);
 
     try {
       const token =
@@ -205,17 +209,19 @@ export default function BulkImportPage() {
   const handleStartImport = async () => {
     if (!file) return;
 
-    // Check required mappings
-    const missing = currentFields
-      .filter((f) => f.required && !mapping[f.key])
-      .map((f) => f.label);
+    if (importPlatform === "CUSTOM") {
+      // Check required mappings
+      const missing = currentFields
+        .filter((f) => f.required && !mapping[f.key])
+        .map((f) => f.label);
 
-    if (missing.length > 0) {
-      alert(`Please map the following required fields: ${missing.join(", ")}`);
-      return;
+      if (missing.length > 0) {
+        alert(`Please map the following required fields: ${missing.join(", ")}`);
+        return;
+      }
     }
 
-    if (showWarningsConfirm) {
+    if (showWarningsConfirm || importPlatform !== "CUSTOM") {
       await executeImport();
       return;
     }
@@ -302,6 +308,7 @@ export default function BulkImportPage() {
                 <h3 className="text-sm font-black text-gray-850 dark:text-gray-200 flex items-center gap-2">
                   <Database size={16} className="text-emerald-600" />
                   1. What data are you importing?
+                  {file && <Lock size={12} className="text-gray-400 ml-1" />}
                 </h3>
                 <div className="flex gap-4">
                   <button
@@ -315,8 +322,11 @@ export default function BulkImportPage() {
                         : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 hover:border-gray-300"
                     }`}
                   >
-                    <span className="font-bold text-sm">Products & Catalog</span>
-                    <span className="text-[10px] text-gray-500 dark:text-gray-400">Import products, options, stock, specs, and variants.</span>
+                    <div className="flex items-center justify-between w-full">
+                      <span className="font-bold text-sm">Products & Catalog</span>
+                      {file && <Lock size={12} className="text-gray-400 opacity-60" />}
+                    </div>
+                    <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Import products, options, stock, specs, and variants.</span>
                   </button>
                   <button
                     onClick={() => {
@@ -329,18 +339,94 @@ export default function BulkImportPage() {
                         : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 hover:border-gray-300"
                     }`}
                   >
-                    <span className="font-bold text-sm">Orders & Line Items</span>
-                    <span className="text-[10px] text-gray-500 dark:text-gray-400">Import customers, purchase total, payment status, and items.</span>
+                    <div className="flex items-center justify-between w-full">
+                      <span className="font-bold text-sm">Orders & Line Items</span>
+                      {file && <Lock size={12} className="text-gray-400 opacity-60" />}
+                    </div>
+                    <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Import customers, purchase total, payment status, and items.</span>
                   </button>
                 </div>
               </div>
 
-              {/* Step 2: Upload Zone */}
+              {/* Step 2: Select Format */}
               <div className="space-y-3">
                 <h3 className="text-sm font-black text-gray-850 dark:text-gray-200 flex items-center gap-2">
                   <FileSpreadsheet size={16} className="text-emerald-600" />
-                  2. Choose Spreadsheet File
+                  2. Select Format Source
+                  {file && <Lock size={12} className="text-gray-400 ml-1" />}
                 </h3>
+                <div className="flex gap-4 flex-wrap">
+                  <button
+                    onClick={() => {
+                      if (!file) setImportPlatform("CUSTOM");
+                    }}
+                    disabled={!!file}
+                    className={`px-6 py-4 rounded-2xl border text-left flex flex-col gap-1 transition-all w-full max-w-[280px] disabled:opacity-60 disabled:cursor-not-allowed ${
+                      importPlatform === "CUSTOM"
+                        ? "bg-emerald-50/30 dark:bg-emerald-950/15 border-emerald-500 text-emerald-900 dark:text-emerald-300 ring-2 ring-emerald-500/20"
+                        : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 hover:border-gray-300"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <span className="font-bold text-sm">Custom Spreadsheet</span>
+                      {file && <Lock size={12} className="text-gray-400 opacity-60" />}
+                    </div>
+                    <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">Map your own custom columns.</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!file) setImportPlatform("SHOPIFY");
+                    }}
+                    disabled={!!file}
+                    className={`px-6 py-4 rounded-2xl border text-left flex flex-col gap-1 transition-all w-full max-w-[280px] disabled:opacity-60 disabled:cursor-not-allowed ${
+                      importPlatform === "SHOPIFY"
+                        ? "bg-emerald-50/30 dark:bg-emerald-950/15 border-emerald-500 text-emerald-900 dark:text-emerald-300 ring-2 ring-emerald-500/20"
+                        : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 hover:border-gray-300"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <span className="font-bold text-sm">Shopify Export</span>
+                      {file && <Lock size={12} className="text-gray-400 opacity-60" />}
+                    </div>
+                    <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">No mapping required. Parses Options & Variants automatically.</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!file) setImportPlatform("WOOCOMMERCE");
+                    }}
+                    disabled={!!file}
+                    className={`px-6 py-4 rounded-2xl border text-left flex flex-col gap-1 transition-all w-full max-w-[280px] disabled:opacity-60 disabled:cursor-not-allowed ${
+                      importPlatform === "WOOCOMMERCE"
+                        ? "bg-emerald-50/30 dark:bg-emerald-950/15 border-emerald-500 text-emerald-900 dark:text-emerald-300 ring-2 ring-emerald-500/20"
+                        : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 hover:border-gray-300"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <span className="font-bold text-sm">WooCommerce Export</span>
+                      {file && <Lock size={12} className="text-gray-400 opacity-60" />}
+                    </div>
+                    <span className="text-[10px] text-gray-500 dark:text-gray-400 mt-1">No mapping required. Native structure support.</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Step 3: Upload Zone */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-black text-gray-850 dark:text-gray-200 flex items-center gap-2">
+                    <Upload size={16} className="text-emerald-600" />
+                    3. Choose Spreadsheet File
+                  </h3>
+                  {importPlatform === "CUSTOM" && (
+                    <button
+                      onClick={() => alert("Template download feature coming soon!")}
+                      className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-1 bg-blue-50 dark:bg-blue-950/30 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/50 transition-all"
+                    >
+                      <Download size={14} />
+                      Download {importType === "PRODUCTS" ? "Product" : "Order"} Template
+                    </button>
+                  )}
+                </div>
                 <div
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={handleDrop}
@@ -407,25 +493,27 @@ export default function BulkImportPage() {
                 </div>
               </div>
 
-              {/* Step 3: Column Mapping & Preview */}
+              {/* Step 4: Column Mapping & Preview */}
               {file && sheetHeaders.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="space-y-8 border-t border-gray-100 dark:border-gray-850 pt-8"
                 >
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-black text-gray-850 dark:text-gray-200 flex items-center gap-2">
-                      <HelpCircle size={16} className="text-emerald-600" />
-                      3. Map Spreadsheet Columns to System Fields
-                    </h3>
-                    <ColumnMapper
-                      headers={sheetHeaders}
-                      fields={currentFields}
-                      mapping={mapping}
-                      setMapping={setMapping}
-                    />
-                  </div>
+                  {importPlatform === "CUSTOM" && (
+                    <div className="space-y-3">
+                      <h3 className="text-sm font-black text-gray-850 dark:text-gray-200 flex items-center gap-2">
+                        <HelpCircle size={16} className="text-emerald-600" />
+                        4. Map Spreadsheet Columns to System Fields
+                      </h3>
+                      <ColumnMapper
+                        headers={sheetHeaders}
+                        fields={currentFields}
+                        mapping={mapping}
+                        setMapping={setMapping}
+                      />
+                    </div>
+                  )}
 
                   {/* Spreadsheet Preview Grid */}
                   <div className="space-y-3">
