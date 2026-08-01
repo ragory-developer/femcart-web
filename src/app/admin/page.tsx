@@ -67,6 +67,8 @@ interface DashboardStats {
   orders: number;
   lowStock: number;
   users: number;
+  revenue: number;
+  avgOrderValue: number;
 }
 
 // --- MOCK DATA ---
@@ -166,7 +168,10 @@ export default function AdminDashboard() {
     orders: 0,
     lowStock: 0,
     users: 0,
+    revenue: 0,
+    avgOrderValue: 0,
   });
+  const [latestOrders, setLatestOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -183,7 +188,7 @@ export default function AdminDashboard() {
             fetch(`${API_URL}/api/products?limit=1`),
             fetch(`${API_URL}/api/categories`),
             fetch(`${API_URL}/api/brands?limit=1`),
-            fetch(`${API_URL}/api/orders?limit=1`, {
+            fetch(`${API_URL}/api/orders?limit=1000`, {
               headers: { Authorization: `Bearer ${token}` },
             }),
           ]);
@@ -196,6 +201,19 @@ export default function AdminDashboard() {
         const totalProds = productsData.pagination?.total || 0;
         const lowStockSimulated = Math.floor(totalProds * 0.15) || 4;
 
+        const ordersList = ordersData.data || [];
+        const totalRev = ordersList.reduce((sum: number, o: any) => sum + (Number(o.total) || 0), 0);
+        const avgVal = ordersList.length ? totalRev / ordersList.length : 0;
+
+        const formattedRecent = ordersList.slice(0, 4).map((o: any) => ({
+          id: o.id,
+          customer: o.customerName || o.user?.name || "Guest User",
+          total: Number(o.total) || 0,
+          status: o.status.charAt(0) + o.status.slice(1).toLowerCase(),
+        }));
+
+        setLatestOrders(formattedRecent.length ? formattedRecent : recentOrders);
+
         setStats({
           products: totalProds,
           categories: categoriesData.data?.length || 0,
@@ -203,6 +221,8 @@ export default function AdminDashboard() {
           orders: ordersData.pagination?.total || 0,
           lowStock: lowStockSimulated,
           users: 1250,
+          revenue: totalRev,
+          avgOrderValue: avgVal,
         });
       } catch (error) {
         console.error("Failed to fetch stats:", error);
@@ -238,7 +258,7 @@ export default function AdminDashboard() {
               Total Revenue
             </p>
             <h3 className="text-2xl font-black text-gray-900 dark:text-white">
-              ৳ 24,592.00
+              ৳ {loading ? "..." : stats.revenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </h3>
             <p className="text-xs font-bold text-emerald-500 flex items-center gap-1 mt-1">
               <TrendingUp size={12} /> +14.5% from last week
@@ -267,7 +287,7 @@ export default function AdminDashboard() {
             </span>
           </div>
           <h3 className="text-xl font-black text-indigo-600 dark:text-indigo-400">
-            ৳ 84.50
+            ৳ {loading ? "..." : stats.avgOrderValue.toFixed(2)}
           </h3>
         </div>
 
@@ -709,13 +729,13 @@ export default function AdminDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {recentOrders.map((order) => (
+                {latestOrders.map((order) => (
                   <tr
                     key={order.id}
                     className="group transition-colors duration-200 hover:bg-gray-50/80 dark:hover:bg-gray-750/30"
                   >
                     <td className="px-4 py-3 align-middle border border-gray-200 dark:border-gray-750 font-medium text-gray-900 dark:text-white text-xs">
-                      {order.id}
+                      {order.id.slice(-6).toUpperCase()}
                     </td>
                     <td className="px-4 py-3 align-middle border border-gray-200 dark:border-gray-750 text-gray-500 flex items-center gap-2 text-xs">
                       {order.customer === "Guest User" ? (
