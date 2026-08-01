@@ -68,15 +68,15 @@ export const SearchSuggestionCard = React.memo(
               {product.specialPrice ? (
                 <div className="flex flex-col items-end leading-tight">
                   <span className="text-sm font-black text-rose-600 dark:text-rose-400">
-                    Tk {Number(product.specialPrice).toFixed(2)}
+                    ৳ {Number(product.specialPrice).toFixed(2)}
                   </span>
                   <span className="text-[10px] font-medium text-gray-400 line-through">
-                    Tk {Number(product.price).toFixed(2)}
+                    ৳ {Number(product.price).toFixed(2)}
                   </span>
                 </div>
               ) : (
                 <span className="text-sm font-black text-gray-900 dark:text-white">
-                  Tk {Number(product.price).toFixed(2)}
+                  ৳ {Number(product.price).toFixed(2)}
                 </span>
               )}
             </div>

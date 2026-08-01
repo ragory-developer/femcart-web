@@ -157,7 +157,7 @@ export default function CartDrawer() {
 
                       <div className="flex justify-between items-center mt-2">
                         <div className="font-black text-emerald-600 dark:text-emerald-500">
-                          Tk {item.price.toFixed(2)}
+                          ৳ {item.price.toFixed(2)}
                         </div>
 
                         <div className="flex items-center gap-2">
@@ -206,7 +206,7 @@ export default function CartDrawer() {
                     Subtotal
                   </span>
                   <span className="font-black text-2xl text-emerald-600 dark:text-emerald-500">
-                    Tk {total.toFixed(2)}
+                    ৳ {total.toFixed(2)}
                   </span>
                 </div>
 

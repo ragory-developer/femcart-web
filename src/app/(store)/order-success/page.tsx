@@ -143,7 +143,7 @@ function OrderSuccessContent() {
                         </h3>
                         <p className="text-amber-800/80 dark:text-amber-400/80 text-sm font-medium leading-relaxed">
                           Please keep the exact amount of{" "}
-                          <strong>Tk {order.total?.toFixed(2)}</strong> ready at
+                          <strong>৳ {order.total?.toFixed(2)}</strong> ready at
                           the time of delivery. Our delivery executive will
                           contact you shortly before arriving at your address.
                         </p>
@@ -253,7 +253,7 @@ function OrderSuccessContent() {
                         </div>
                       </div>
                       <div className="text-sm font-bold text-gray-900 dark:text-white text-right">
-                        Tk {((item.price || 0) * item.quantity).toFixed(2)}
+                        ৳ {((item.price || 0) * item.quantity).toFixed(2)}
                       </div>
                     </div>
                   ))}
@@ -262,24 +262,24 @@ function OrderSuccessContent() {
                 <div className="space-y-3 pt-6 border-t border-gray-100 dark:border-gray-800">
                   <div className="flex justify-between text-sm font-medium text-gray-600 dark:text-gray-400">
                     <span>Subtotal</span>
-                    <span>Tk {(order.subtotal || 0).toFixed(2)}</span>
+                    <span>৳ {(order.subtotal || 0).toFixed(2)}</span>
                   </div>
                   {order.discount > 0 && (
                     <div className="flex justify-between text-sm font-bold text-emerald-600 dark:text-emerald-500">
                       <span>Discount</span>
-                      <span>-Tk {(order.discount || 0).toFixed(2)}</span>
+                      <span>-৳ {(order.discount || 0).toFixed(2)}</span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm font-medium text-gray-600 dark:text-gray-400">
                     <span>Delivery Fee</span>
-                    <span>Tk {(order.deliveryFee || 0).toFixed(2)}</span>
+                    <span>৳ {(order.deliveryFee || 0).toFixed(2)}</span>
                   </div>
                   <div className="pt-4 mt-4 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center">
                     <span className="text-lg font-black text-gray-900 dark:text-white uppercase">
                       Total
                     </span>
                     <span className="text-2xl font-black text-blue-600 dark:text-blue-500">
-                      Tk {(order.total || 0).toFixed(2)}
+                      ৳ {(order.total || 0).toFixed(2)}
                     </span>
                   </div>
                 </div>

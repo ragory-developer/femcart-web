@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Heart, Check, Loader2, Minus } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useCartStore } from "@/store/cartStore";
 import { useSettingsStore } from "@/store/settingsStore";
@@ -97,12 +96,12 @@ export function ProductCard({ product }: ProductCardProps) {
   const displayPrice =
     typeof product.price === "string" && !product.specialPrice
       ? product.price
-      : `$${Number(currentPriceNum).toFixed(2)}`;
+      : `৳ ${Number(currentPriceNum).toFixed(2)}`;
 
   const displayOldPrice = product.oldPrice
     ? product.oldPrice
     : oldPriceNum
-      ? `$${Number(oldPriceNum).toFixed(2)}`
+      ? `৳ ${Number(oldPriceNum).toFixed(2)}`
       : null;
 
   const badgeText =

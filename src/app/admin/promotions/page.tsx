@@ -490,15 +490,15 @@ export default function PromotionsPage() {
                           product.specialPrice < product.price ? (
                             <>
                               <span className="text-blue-600 dark:text-blue-400 font-bold">
-                                ${product.specialPrice.toFixed(2)}
+                                ৳ {product.specialPrice.toFixed(2)}
                               </span>
                               <span className="text-[10px] text-gray-400 line-through">
-                                ${product.price.toFixed(2)}
+                                ৳ {product.price.toFixed(2)}
                               </span>
                             </>
                           ) : (
                             <span className="font-semibold text-sm text-gray-700 dark:text-gray-300">
-                              ${product.price.toFixed(2)}
+                              ৳ {product.price.toFixed(2)}
                             </span>
                           )}
                         </div>

@@ -453,7 +453,7 @@ function CheckoutContent() {
                           </span>
                         </div>
                         <div className="text-sm font-bold text-blue-600 dark:text-blue-400 mt-1">
-                          Tk {(item.price * item.quantity).toFixed(2)}
+                          ৳ {(item.price * item.quantity).toFixed(2)}
                         </div>
                       </div>
                     </div>
@@ -487,7 +487,7 @@ function CheckoutContent() {
                     {calculatingTotals ? (
                       <Loader2 className="animate-spin w-4 h-4 inline" />
                     ) : (
-                      `Tk ${orderTotals.subtotal.toFixed(2)}`
+                      `৳ ${orderTotals.subtotal.toFixed(2)}`
                     )}
                   </span>
                 </div>
@@ -496,7 +496,7 @@ function CheckoutContent() {
                     <span>
                       Discount {appliedCoupon && `(${appliedCoupon})`}
                     </span>
-                    <span>-Tk {orderTotals.discount.toFixed(2)}</span>
+                    <span>-৳ {orderTotals.discount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -505,7 +505,7 @@ function CheckoutContent() {
                     {calculatingTotals ? (
                       <Loader2 className="animate-spin w-4 h-4 inline" />
                     ) : orderTotals.deliveryFee > 0 ? (
-                      `Tk ${orderTotals.deliveryFee.toFixed(2)}`
+                      `৳ ${orderTotals.deliveryFee.toFixed(2)}`
                     ) : (
                       "Calculated next step"
                     )}
@@ -524,7 +524,7 @@ function CheckoutContent() {
                     {calculatingTotals ? (
                       <Loader2 className="animate-spin w-8 h-8 inline" />
                     ) : (
-                      `Tk ${orderTotals.total.toFixed(2)}`
+                      `৳ ${orderTotals.total.toFixed(2)}`
                     )}
                   </span>
                 </div>

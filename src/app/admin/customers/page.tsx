@@ -113,7 +113,7 @@ export default function CustomersPage() {
               Total Spent
             </p>
             <h3 className="text-2xl font-black text-gray-900 dark:text-white">
-              ${totalSpent.toFixed(2)}
+              ৳ {totalSpent.toFixed(2)}
             </h3>
             <p className="text-xs font-bold text-gray-400 mt-1">
               By filtered customers
@@ -284,7 +284,7 @@ export default function CustomersPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 align-middle border border-gray-200 dark:border-gray-750 font-black text-emerald-600 dark:text-emerald-400 text-center text-lg">
-                        ${(customer.totalOrderAmount || 0).toFixed(2)}
+                        ৳ {(customer.totalOrderAmount || 0).toFixed(2)}
                       </td>
                       <td className="px-6 py-4 align-middle border border-gray-200 dark:border-gray-750 text-right">
                         <div className="flex flex-col items-end gap-1">

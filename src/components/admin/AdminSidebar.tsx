@@ -8,7 +8,6 @@ import {
   ChevronRight,
   ChevronDown,
   LogOut,
-  Leaf,
   Lock,
 } from "lucide-react";
 import Link from "next/link";

@@ -225,7 +225,7 @@ export default function DamagedProductsPage() {
               Total Value Lost
             </p>
             <h3 className="text-2xl font-black text-gray-900 dark:text-white">
-              ${totalDamagedValue.toFixed(2)}
+              ৳ {totalDamagedValue.toFixed(2)}
             </h3>
             <p className="text-xs font-bold text-gray-400 mt-1">
               Estimated loss
@@ -356,7 +356,7 @@ export default function DamagedProductsPage() {
                       {item.damagedQuantity}
                     </td>
                     <td className="px-6 py-4 align-middle border border-gray-200 dark:border-gray-750 font-black text-gray-700 dark:text-gray-300 text-right text-lg">
-                      ${(item.price * item.damagedQuantity).toFixed(2)}
+                      ৳ {(item.price * item.damagedQuantity).toFixed(2)}
                     </td>
                     <td className="px-6 py-4 align-middle border border-gray-200 dark:border-gray-750 text-right text-gray-500 text-xs font-medium">
                       {formatRelativeTime(item.order.createdAt)}

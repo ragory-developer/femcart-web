@@ -11,7 +11,6 @@ import {
   KeyRound,
   Loader2,
   Lock,
-  Mail,
   Phone,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";

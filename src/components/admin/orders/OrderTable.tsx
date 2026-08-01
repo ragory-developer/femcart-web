@@ -177,7 +177,7 @@ export function OrderTable({
                 </td>
                 <td className="px-6 py-4 align-middle border border-gray-200 dark:border-gray-750">
                   <p className="text-lg font-black text-gray-900 dark:text-white">
-                    Tk {order.total.toFixed(2)}
+                    ৳ {order.total.toFixed(2)}
                   </p>
                   <div className="mt-1 flex items-center gap-2">
                     <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-gray-500 bg-gray-100 dark:bg-gray-700/50 px-2 py-0.5 rounded-md">

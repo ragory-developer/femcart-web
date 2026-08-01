@@ -356,7 +356,7 @@ export default function SmsMarketingPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 align-middle border border-gray-200 dark:border-gray-750 text-gray-900 dark:text-white text-center text-sm font-medium">
-                      ${(customer.totalOrderAmount || 0).toFixed(2)}
+                      ৳ {(customer.totalOrderAmount || 0).toFixed(2)}
                     </td>
                     <td className="px-6 py-4 align-middle border border-gray-200 dark:border-gray-750 text-center">
                       {customer.isGuest ? (

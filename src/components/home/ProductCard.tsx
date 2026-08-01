@@ -3,7 +3,7 @@
 import React, { useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, Plus, Eye, Minus } from "lucide-react";
+import { Heart, Plus, Minus } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
 import { useSettingsStore } from "@/store/settingsStore";
 import { useShallow } from "zustand/react/shallow";
@@ -17,7 +17,6 @@ import { useWishlistStore } from "@/store/wishlistStore";
 
 // Types
 import { useQueryClient } from "@tanstack/react-query";
-import { API_URL } from "@/lib/config";
 
 export interface ProductCardProps {
   product: any;
@@ -52,8 +51,8 @@ function getPriceInfo(product: any): {
           )
         : 0;
     return {
-      displayPrice: `Tk ${product.specialPrice.toFixed(2)}`,
-      originalPrice: `Tk ${product.price.toFixed(2)}`,
+      displayPrice: `৳ ${product.specialPrice.toFixed(2)}`,
+      originalPrice: `৳ ${product.price.toFixed(2)}`,
       discountPercent: discount,
       isRange: false,
     };
@@ -70,14 +69,14 @@ function getPriceInfo(product: any): {
           )
         : 0;
     return {
-      displayPrice: `Tk ${product.price.toFixed(2)}`,
-      originalPrice: `Tk ${product.comparePrice.toFixed(2)}`,
+      displayPrice: `৳ ${product.price.toFixed(2)}`,
+      originalPrice: `৳ ${product.comparePrice.toFixed(2)}`,
       discountPercent: discount,
       isRange: false,
     };
   }
   return {
-    displayPrice: `Tk ${product.price.toFixed(2)}`,
+    displayPrice: `৳ ${product.price.toFixed(2)}`,
     originalPrice: null,
     discountPercent: 0,
     isRange: false,

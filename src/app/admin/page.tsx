@@ -238,7 +238,7 @@ export default function AdminDashboard() {
               Total Revenue
             </p>
             <h3 className="text-2xl font-black text-gray-900 dark:text-white">
-              $24,592.00
+              ৳ 24,592.00
             </h3>
             <p className="text-xs font-bold text-emerald-500 flex items-center gap-1 mt-1">
               <TrendingUp size={12} /> +14.5% from last week
@@ -267,7 +267,7 @@ export default function AdminDashboard() {
             </span>
           </div>
           <h3 className="text-xl font-black text-indigo-600 dark:text-indigo-400">
-            $84.50
+            ৳ 84.50
           </h3>
         </div>
 
@@ -724,7 +724,7 @@ export default function AdminDashboard() {
                       {order.customer}
                     </td>
                     <td className="px-4 py-3 align-middle border border-gray-200 dark:border-gray-750 font-bold text-gray-900 dark:text-white text-right text-xs">
-                      ${order.total.toFixed(2)}
+                      ৳ {order.total.toFixed(2)}
                     </td>
                     <td className="px-4 py-3 align-middle border border-gray-200 dark:border-gray-750 text-right">
                       <span
@@ -781,7 +781,7 @@ export default function AdminDashboard() {
                       {purchase.supplier}
                     </td>
                     <td className="px-4 py-3 align-middle border border-gray-200 dark:border-gray-750 font-bold text-rose-600 dark:text-rose-400 text-right text-xs">
-                      -${purchase.cost.toFixed(2)}
+                      -৳ {purchase.cost.toFixed(2)}
                     </td>
                     <td className="px-4 py-3 align-middle border border-gray-200 dark:border-gray-750 text-right">
                       <span

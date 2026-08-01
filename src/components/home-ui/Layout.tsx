@@ -77,7 +77,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             >
               <Menu size={24} strokeWidth={1.5} />
             </button>
-            <a
+            <Link
               href="/"
               className="relative flex flex-col items-center justify-center font-bold text-[26px] text-[#E32857]"
               style={{ letterSpacing: "-0.5px" }}
@@ -117,7 +117,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   </span>
                 </>
               )}
-            </a>
+            </Link>
           </div>
 
           {/* Navigation Links (Center) */}
@@ -266,7 +266,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <footer className="bg-white pt-10 md:pt-16 pb-8 border-t border-orange-200 mt-8 md:mt-20">
         <div className="max-w-[1440px] mx-auto px-4 md:px-6 grid grid-cols-2 md:flex md:flex-row gap-y-10 gap-x-4 md:gap-12 justify-between">
           <div className="col-span-2 md:col-auto md:w-1/3">
-            <a
+            <Link
               href="/"
               className="font-serif font-semibold text-pink-500 text-[32px] inline-block mb-4"
             >
@@ -283,7 +283,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               ) : (
                 settings?.store_name || "Femecart"
               )}
-            </a>
+            </Link>
             <p className="text-text-amber-700 text-[14px] mb-4">
               {settings?.footer_about_text ||
                 "Providing comfortable bras and panties to women across Bangladesh."}

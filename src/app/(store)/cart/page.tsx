@@ -112,7 +112,7 @@ export default function CartPage() {
                         {item.name}
                       </Link>
                       <div className="text-emerald-600 dark:text-emerald-500 font-bold text-lg mb-4 sm:mb-0">
-                        Tk {item.price.toFixed(2)}
+                        ৳ {item.price.toFixed(2)}
                       </div>
                     </div>
 
@@ -150,7 +150,7 @@ export default function CartPage() {
                       </div>
 
                       <div className="font-bold text-lg w-24 text-right hidden lg:block">
-                        Tk {(item.price * (item.quantity || 1)).toFixed(2)}
+                        ৳ {(item.price * (item.quantity || 1)).toFixed(2)}
                       </div>
 
                       <button
@@ -178,7 +178,7 @@ export default function CartPage() {
                     Subtotal
                   </span>
                   <span className="text-gray-800 dark:text-gray-200 font-semibold">
-                    Tk {subtotal.toFixed(2)}
+                    ৳ {subtotal.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
@@ -192,12 +192,12 @@ export default function CartPage() {
                         : "text-gray-800 dark:text-gray-200 font-semibold"
                     }
                   >
-                    {shipping === 0 ? "Free" : `Tk ${shipping.toFixed(2)}`}
+                    {shipping === 0 ? "Free" : `৳ ${shipping.toFixed(2)}`}
                   </span>
                 </div>
                 {shipping > 0 && (
                   <div className="text-xs text-center text-emerald-600 bg-emerald-50 p-2 rounded-lg mt-2">
-                    Add Tk {(50 - subtotal).toFixed(2)} more to your cart to get{" "}
+                    Add ৳ {(50 - subtotal).toFixed(2)} more to your cart to get{" "}
                     <strong>Free Shipping!</strong>
                   </div>
                 )}
@@ -208,7 +208,7 @@ export default function CartPage() {
                   Total
                 </span>
                 <span className="font-extrabold text-3xl text-emerald-600 dark:text-emerald-500">
-                  Tk {total.toFixed(2)}
+                  ৳ {total.toFixed(2)}
                 </span>
               </div>
 

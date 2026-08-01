@@ -225,8 +225,8 @@ export default function AbandonedCartsPage() {
             <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">
               Potential Value Lost
             </p>
-            <h3 className="text-2xl font-black text-gray-900 dark:text-white">
-              ${totalAbandonedValue.toFixed(2)}
+             <h3 className="text-2xl font-black text-gray-900 dark:text-white">
+              ৳ {totalAbandonedValue.toFixed(2)}
             </h3>
             <p className="text-xs font-bold text-gray-400 mt-1">
               Total value of carts shown
@@ -497,7 +497,7 @@ export default function AbandonedCartsPage() {
                         </p>
                       </td>
                       <td className="px-6 py-4 align-middle border border-gray-200 dark:border-gray-750 font-black text-rose-600 dark:text-rose-400 text-right text-lg">
-                        ${(cart.totalValue || 0).toFixed(2)}
+                        ৳ {(cart.totalValue || 0).toFixed(2)}
                       </td>
                       <td className="px-6 py-4 align-middle border border-gray-200 dark:border-gray-750 text-right">
                         <div className="flex items-center justify-end gap-1.5 text-rose-500 dark:text-rose-400 font-bold text-xs bg-rose-50 dark:bg-rose-900/20 px-2.5 py-1 rounded-full w-fit ml-auto">

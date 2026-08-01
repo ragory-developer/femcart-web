@@ -241,7 +241,7 @@ export default function ReturnedProductsPage() {
               Pending Value
             </p>
             <h3 className="text-2xl font-black text-gray-900 dark:text-white">
-              ${totalReturnedValue.toFixed(2)}
+              ৳ {totalReturnedValue.toFixed(2)}
             </h3>
             <p className="text-xs font-bold text-gray-400 mt-1">
               Value of pending items
@@ -371,8 +371,7 @@ export default function ReturnedProductsPage() {
                         (item.damagedQuantity || 0)}
                     </td>
                     <td className="px-6 py-4 align-middle border border-gray-200 dark:border-gray-750 font-black text-emerald-600 dark:text-emerald-400 text-right text-lg">
-                      $
-                      {(
+                      ৳ {(
                         item.price *
                         (item.returnedQuantity -
                           (item.restockedQuantity || 0) -

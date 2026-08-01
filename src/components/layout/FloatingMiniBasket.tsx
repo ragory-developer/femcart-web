@@ -70,7 +70,7 @@ export default function FloatingMiniBasket() {
                 >
                   Total:{" "}
                   <span className="text-emerald-600 dark:text-emerald-500">
-                    Tk {totalAmount.toFixed(2)}
+                    ৳ {totalAmount.toFixed(2)}
                   </span>
                 </motion.div>
               </div>

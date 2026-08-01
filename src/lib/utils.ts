@@ -22,8 +22,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(amount: number) {
-  // Use BDT format with Taka symbol Tk
-  return `Tk ${amount.toFixed(2)}`;
+  // Use BDT format with Taka symbol ৳ return `৳ ${amount.toFixed(2)}`;
 }
 
 /**

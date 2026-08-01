@@ -424,7 +424,7 @@ export default function FacebookManagerPage() {
                 </span>
               </div>
               <div className="text-3xl font-black text-gray-900 dark:text-white">
-                ${analytics.spend.toFixed(2)}
+                ৳ {analytics.spend.toFixed(2)}
               </div>
             </div>
 
@@ -438,7 +438,7 @@ export default function FacebookManagerPage() {
                 </span>
               </div>
               <div className="text-3xl font-black text-emerald-600 dark:text-emerald-400">
-                ${analytics.revenue.toFixed(2)}
+                ৳ {analytics.revenue.toFixed(2)}
               </div>
             </div>
 
@@ -504,7 +504,7 @@ export default function FacebookManagerPage() {
                         {c.name}
                       </td>
                       <td className="p-4 text-gray-600 dark:text-gray-300 font-medium">
-                        ${c.spend.toFixed(2)}
+                        ৳ {c.spend.toFixed(2)}
                       </td>
                       <td className="p-4 text-gray-600 dark:text-gray-300">
                         {c.impressions.toLocaleString()}
@@ -516,7 +516,7 @@ export default function FacebookManagerPage() {
                         {c.purchases}
                       </td>
                       <td className="p-4 font-bold text-emerald-600 dark:text-emerald-400">
-                        ${c.revenue?.toFixed(2) || "0.00"}
+                        ৳ {c.revenue?.toFixed(2) || "0.00"}
                       </td>
                       <td className="p-4 pr-6 text-right font-black text-indigo-600 dark:text-indigo-400">
                         {c.roas}x
@@ -568,7 +568,7 @@ export default function FacebookManagerPage() {
                   <option value="">-- Choose a product to advertise --</option>
                   {products.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.name} - Tk {p.price}
+                      {p.name} - ৳ {p.price}
                     </option>
                   ))}
                 </select>

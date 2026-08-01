@@ -404,11 +404,11 @@ export default function ProductOverview({
             className={`text-3xl sm:text-4xl font-medium tracking-tight ${getTextColorClass(priceColor, "text-gray-900 dark:text-white")}`}
             style={getTextColorStyle(priceColor)}
           >
-            Tk {currentPrice.toFixed(2)}
+            ৳ {currentPrice.toFixed(2)}
           </span>
           {!selectedVariant && productType === "VARIABLE" && priceRange && (
             <span className="text-[clamp(1rem,1.5vw,1.25rem)] text-gray-500 font-medium whitespace-nowrap">
-              (Tk {priceRange.min.toFixed(2)} - Tk {priceRange.max.toFixed(2)})
+              (৳ {priceRange.min.toFixed(2)} - ৳ {priceRange.max.toFixed(2)})
             </span>
           )}
           {isDiscounted && (
@@ -416,10 +416,10 @@ export default function ProductOverview({
               className={`flex items-center gap-3 ${priceAlign === "center" ? "justify-center" : priceAlign === "right" ? "justify-end" : ""}`}
             >
               <span className="text-xl sm:text-2xl text-gray-400 line-through font-medium">
-                Tk {originalPrice.toFixed(2)}
+                ৳ {originalPrice.toFixed(2)}
               </span>
               <span className="bg-pink-50 text-pink-600 border border-pink-100 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
-                Save Tk {(originalPrice - currentPrice).toFixed(2)}
+                Save ৳ {(originalPrice - currentPrice).toFixed(2)}
               </span>
             </div>
           )}
@@ -769,12 +769,12 @@ export default function ProductOverview({
                                 <span
                                   className={`text-sm font-black ${isSelected ? "text-rose-600 dark:text-rose-400" : "text-rose-500"}`}
                                 >
-                                  Tk {v.specialPrice?.toFixed(0)}
+                                  ৳ {v.specialPrice?.toFixed(0)}
                                 </span>
                                 <span
                                   className={`text-[10px] font-medium line-through ${isSelected ? "text-gray-400" : "text-gray-300"}`}
                                 >
-                                  Tk {v.price?.toFixed(0)}
+                                  ৳ {v.price?.toFixed(0)}
                                 </span>
                               </div>
                             );
@@ -783,7 +783,7 @@ export default function ProductOverview({
                             <p
                               className={`text-sm font-black mt-0.5 ${isSelected ? "text-gray-900 dark:text-white" : "text-gray-400"}`}
                             >
-                              Tk {v.price?.toFixed(0)}
+                              ৳ {v.price?.toFixed(0)}
                             </p>
                           );
                         })()}

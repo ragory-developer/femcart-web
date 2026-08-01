@@ -1,9 +1,7 @@
-import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
 import ProductDetailPage, {
   generateMetadata as templateGenerateMetadata,
   getGlobalSettings,
 } from "@/components/product/shared/ProductPageTemplate";
-import { API_URL } from "@/lib/config";
 import { redirect } from "next/navigation";
 
 import { Metadata } from "next";

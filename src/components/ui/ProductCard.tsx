@@ -16,7 +16,6 @@ import { useShallow } from "zustand/react/shallow";
 import { useWishlistStore } from "@/store/wishlistStore";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { API_URL } from "@/lib/config";
 
 function getPriceInfo(product: any): {
   displayPrice: string;
@@ -47,14 +46,14 @@ function getPriceInfo(product: any): {
       const max = Math.max(...effectivePrices);
       if (min === max) {
         return {
-          displayPrice: `Tk ${min.toFixed(2)}`,
+          displayPrice: `৳ ${min.toFixed(2)}`,
           originalPrice: null,
           discountPercent: 0,
           isRange: false,
         };
       }
       return {
-        displayPrice: `Tk ${min.toFixed(2)} – Tk ${max.toFixed(2)}`,
+        displayPrice: `৳ ${min.toFixed(2)} – ৳ ${max.toFixed(2)}`,
         originalPrice: null,
         discountPercent: 0,
         isRange: true,
@@ -82,8 +81,8 @@ function getPriceInfo(product: any): {
           )
         : 0;
     return {
-      displayPrice: `Tk ${product.specialPrice.toFixed(2)}`,
-      originalPrice: `Tk ${product.price.toFixed(2)}`,
+      displayPrice: `৳ ${product.specialPrice.toFixed(2)}`,
+      originalPrice: `৳ ${product.price.toFixed(2)}`,
       discountPercent: discount,
       isRange: false,
     };
@@ -101,15 +100,15 @@ function getPriceInfo(product: any): {
           )
         : 0;
     return {
-      displayPrice: `Tk ${product.price.toFixed(2)}`,
-      originalPrice: `Tk ${product.comparePrice.toFixed(2)}`,
+      displayPrice: `৳ ${product.price.toFixed(2)}`,
+      originalPrice: `৳ ${product.comparePrice.toFixed(2)}`,
       discountPercent: discount,
       isRange: false,
     };
   }
 
   return {
-    displayPrice: `Tk ${product.price.toFixed(2)}`,
+    displayPrice: `৳ ${product.price.toFixed(2)}`,
     originalPrice: null,
     discountPercent: 0,
     isRange: false,

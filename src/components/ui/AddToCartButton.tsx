@@ -191,7 +191,7 @@ export default function AddToCartButton({
             Total Price
           </span>
           <span className="text-[clamp(0.75rem,1.5vw,0.875rem)] text-gray-500">
-            Tk {currentPrice.toFixed(2)} x {quantity}
+            ৳ {currentPrice.toFixed(2)} x {quantity}
           </span>
         </div>
         <motion.div
@@ -200,7 +200,7 @@ export default function AddToCartButton({
           animate={{ scale: 1, opacity: 1 }}
           className="text-[clamp(1.25rem,4vw,1.5rem)] font-black text-emerald-600 dark:text-emerald-500"
         >
-          Tk {totalPrice.toFixed(2)}
+          ৳ {totalPrice.toFixed(2)}
         </motion.div>
       </div>
     </div>

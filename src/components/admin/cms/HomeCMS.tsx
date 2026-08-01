@@ -843,14 +843,15 @@ function ArrayEditorComponent({
   const otherFields = field.arraySchema.filter((f: any) => f.type !== "image");
 
   const idMapRef = useRef(new WeakMap<any, string>());
+  const counterRef = useRef(0);
   const getId = (item: any, index: number) => {
     if (item._id) return item._id;
     if (typeof item === "object" && item !== null) {
       if (!idMapRef.current.has(item)) {
-        // eslint-disable-next-line react-hooks/purity
+        counterRef.current += 1;
         idMapRef.current.set(
           item,
-          `item-${Math.random().toString(36).substr(2, 9)}`,
+          `item-${counterRef.current}`,
         );
       }
       return idMapRef.current.get(item);
@@ -858,6 +859,7 @@ function ArrayEditorComponent({
     return `item-${index}`;
   };
 
+  // eslint-disable-next-line react-hooks/refs
   const ids = items.map((item: any, idx: number) => getId(item, idx));
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 

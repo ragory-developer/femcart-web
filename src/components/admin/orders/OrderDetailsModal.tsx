@@ -509,13 +509,13 @@ export function OrderDetailsModal({
                                     )}
                                 </span>
                                 <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">
-                                  Qty: {item.quantity} × Tk{" "}
+                                  Qty: {item.quantity} × ৳{" "}
                                   {item.price.toFixed(2)}
                                 </span>
                               </div>
                               <div className="text-right flex flex-col items-end">
                                 <span className="text-sm font-black text-emerald-600 dark:text-emerald-400">
-                                  Tk {(item.quantity * item.price).toFixed(2)}
+                                  ৳ {(item.quantity * item.price).toFixed(2)}
                                 </span>
                                 {showReturnBtn && (
                                   <button
@@ -565,11 +565,11 @@ export function OrderDetailsModal({
                     <div className="mt-8 pt-6 border-t border-gray-100 dark:border-gray-700 space-y-3 print:border-t-4 print:border-gray-900">
                       <div className="flex justify-between text-xs text-gray-500 font-bold">
                         <span>SUBTOTAL</span>
-                        <span>Tk {selectedOrder.subtotal.toFixed(2)}</span>
+                        <span>৳ {selectedOrder.subtotal.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between text-xs text-gray-500 font-bold">
                         <span>DELIVERY FEE</span>
-                        <span>Tk {selectedOrder.deliveryFee.toFixed(2)}</span>
+                        <span>৳ {selectedOrder.deliveryFee.toFixed(2)}</span>
                       </div>
                       {selectedOrder.discount > 0 && (
                         <div className="flex justify-between text-xs text-emerald-600 dark:text-emerald-400 font-bold">
@@ -578,14 +578,14 @@ export function OrderDetailsModal({
                             {selectedOrder.couponCode &&
                               `(${selectedOrder.couponCode})`}
                           </span>
-                          <span>-Tk {selectedOrder.discount.toFixed(2)}</span>
+                          <span>-৳ {selectedOrder.discount.toFixed(2)}</span>
                         </div>
                       )}
                       {((selectedOrder as any).refundAmount || 0) > 0 && (
                         <div className="flex justify-between text-xs text-rose-600 dark:text-rose-400 font-bold">
                           <span>REFUND AMOUNT</span>
                           <span>
-                            -Tk {(selectedOrder as any).refundAmount.toFixed(2)}
+                            -৳ {(selectedOrder as any).refundAmount.toFixed(2)}
                           </span>
                         </div>
                       )}
@@ -594,7 +594,7 @@ export function OrderDetailsModal({
                           Grand Total
                         </span>
                         <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">
-                          Tk {selectedOrder.total.toFixed(2)}
+                          ৳ {selectedOrder.total.toFixed(2)}
                         </span>
                       </div>
                     </div>
@@ -858,10 +858,10 @@ export function OrderDetailsModal({
                         {item.quantity}
                       </td>
                       <td className="py-4 text-sm text-gray-600 text-right">
-                        Tk {item.price.toFixed(2)}
+                        ৳ {item.price.toFixed(2)}
                       </td>
                       <td className="py-4 text-sm font-black text-gray-900 text-right">
-                        Tk {(item.quantity * item.price).toFixed(2)}
+                        ৳ {(item.quantity * item.price).toFixed(2)}
                       </td>
                     </tr>
                   ))}
@@ -874,11 +874,11 @@ export function OrderDetailsModal({
               <div className="w-1/2 space-y-3">
                 <div className="flex justify-between text-sm text-gray-600">
                   <span>Subtotal</span>
-                  <span>Tk {selectedOrder.subtotal.toFixed(2)}</span>
+                  <span>৳ {selectedOrder.subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm text-gray-600">
                   <span>Delivery Fee</span>
-                  <span>Tk {selectedOrder.deliveryFee.toFixed(2)}</span>
+                  <span>৳ {selectedOrder.deliveryFee.toFixed(2)}</span>
                 </div>
                 {selectedOrder.discount > 0 && (
                   <div className="flex justify-between text-sm text-emerald-600">
@@ -887,14 +887,14 @@ export function OrderDetailsModal({
                       {selectedOrder.couponCode &&
                         `(${selectedOrder.couponCode})`}
                     </span>
-                    <span>-Tk {selectedOrder.discount.toFixed(2)}</span>
+                    <span>-৳ {selectedOrder.discount.toFixed(2)}</span>
                   </div>
                 )}
                 {((selectedOrder as any).refundAmount || 0) > 0 && (
                   <div className="flex justify-between text-sm text-rose-600">
                     <span>Refunded Amount</span>
                     <span>
-                      -Tk {(selectedOrder as any).refundAmount.toFixed(2)}
+                      -৳ {(selectedOrder as any).refundAmount.toFixed(2)}
                     </span>
                   </div>
                 )}
@@ -903,7 +903,7 @@ export function OrderDetailsModal({
                     Grand Total
                   </span>
                   <span className="text-2xl font-black text-gray-900">
-                    Tk {selectedOrder.total.toFixed(2)}
+                    ৳ {selectedOrder.total.toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -1043,7 +1043,7 @@ export function OrderDetailsModal({
                     Est. Refund
                   </span>
                   <strong className="text-rose-500 text-2xl tracking-tight">
-                    Tk{" "}
+                    ৳{" "}
                     {Math.round(
                       (returnQuantity *
                         returnItem.price *

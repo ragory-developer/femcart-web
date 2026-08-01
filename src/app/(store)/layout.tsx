@@ -4,7 +4,6 @@ import FloatingMiniBasket from "@/components/layout/FloatingMiniBasket";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import Layout from "@/components/home-ui/Layout";
-import GlobalSearch from "@/components/search/GlobalSearch";
 import { API_URL } from "@/lib/config";
 import StoreInitializer from "@/components/providers/StoreInitializer";
 

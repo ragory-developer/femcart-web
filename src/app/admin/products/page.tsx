@@ -613,12 +613,12 @@ export default function AdminProductsPage() {
       if (p.priceRange.min === p.priceRange.max)
         return (
           <span className="font-mono text-sm">
-            ${p.priceRange.min.toFixed(2)}
+            ৳ {p.priceRange.min.toFixed(2)}
           </span>
         );
       return (
         <span className="font-mono text-xs md:text-sm">
-          ${p.priceRange.min.toFixed(2)} – ${p.priceRange.max.toFixed(2)}
+          ৳ {p.priceRange.min.toFixed(2)} – ৳ {p.priceRange.max.toFixed(2)}
         </span>
       );
     }
@@ -628,16 +628,16 @@ export default function AdminProductsPage() {
       return (
         <div className="flex flex-col">
           <span className="text-emerald-600 dark:text-emerald-400 font-bold font-mono text-sm">
-            ${p.specialPrice?.toFixed(2)}
+            ৳ {p.specialPrice?.toFixed(2)}
           </span>
           <span className="text-xs text-gray-400 line-through font-mono">
-            ${p.price.toFixed(2)}
+            ৳ {p.price.toFixed(2)}
           </span>
         </div>
       );
     }
 
-    return <span className="font-mono text-sm">${p.price.toFixed(2)}</span>;
+    return <span className="font-mono text-sm">৳ {p.price.toFixed(2)}</span>;
   };
 
   const getSaleDates = (p: Product) => {

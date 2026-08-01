@@ -5,7 +5,6 @@ import { Trash2, RotateCcw, AlertTriangle, FileWarning } from "lucide-react";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import DataTable, { DataTableColumn } from "@/components/ui/DataTable";
-import Link from "next/link";
 
 interface TrashItem {
   id: string;
