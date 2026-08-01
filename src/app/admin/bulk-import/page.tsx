@@ -35,6 +35,9 @@ export default function BulkImportPage() {
     message: string;
   } | null>(null);
 
+  const [warnings, setWarnings] = useState<string[]>([]);
+  const [showWarningsConfirm, setShowWarningsConfirm] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Field Schemas
@@ -88,6 +91,8 @@ export default function BulkImportPage() {
     setSheetHeaders([]);
     setPreviewRows([]);
     setMapping({});
+    setWarnings([]);
+    setShowWarningsConfirm(false);
     setImportStatus(null);
 
     const formData = new FormData();
@@ -138,24 +143,13 @@ export default function BulkImportPage() {
     }
   };
 
-  const handleStartImport = async () => {
-    if (!file) return;
-
-    // Check required mappings
-    const missing = currentFields
-      .filter((f) => f.required && !mapping[f.key])
-      .map((f) => f.label);
-
-    if (missing.length > 0) {
-      alert(`Please map the following required fields: ${missing.join(", ")}`);
-      return;
-    }
-
+  const executeImport = async () => {
     setImporting(true);
     setImportStatus(null);
+    setShowWarningsConfirm(false);
 
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file", file!);
     formData.append("mapping", JSON.stringify(mapping));
 
     try {
@@ -190,6 +184,7 @@ export default function BulkImportPage() {
           setSheetHeaders([]);
           setPreviewRows([]);
           setMapping({});
+          setWarnings([]);
         }, 1800);
       } else {
         setImportStatus({
@@ -200,7 +195,62 @@ export default function BulkImportPage() {
     } catch (err: any) {
       setImportStatus({
         success: false,
-        message: err.message || "An network error occurred.",
+        message: err.message || "A network error occurred.",
+      });
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  const handleStartImport = async () => {
+    if (!file) return;
+
+    // Check required mappings
+    const missing = currentFields
+      .filter((f) => f.required && !mapping[f.key])
+      .map((f) => f.label);
+
+    if (missing.length > 0) {
+      alert(`Please map the following required fields: ${missing.join(", ")}`);
+      return;
+    }
+
+    if (showWarningsConfirm) {
+      await executeImport();
+      return;
+    }
+
+    setImporting(true);
+    setImportStatus(null);
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("mapping", JSON.stringify(mapping));
+    formData.append("importType", importType);
+
+    try {
+      const token =
+        localStorage.getItem("femcart_access_token") ||
+        localStorage.getItem("token") ||
+        "";
+
+      const res = await fetch(`${API_URL}/api/bulk-import/validate`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      const json = await res.json();
+      if (json.success && json.warnings && json.warnings.length > 0) {
+        setWarnings(json.warnings);
+        setShowWarningsConfirm(true);
+      } else {
+        await executeImport();
+      }
+    } catch (err: any) {
+      setImportStatus({
+        success: false,
+        message: err.message || "A validation check error occurred.",
       });
     } finally {
       setImporting(false);
@@ -409,7 +459,23 @@ export default function BulkImportPage() {
                   </div>
 
                   {/* Actions Section */}
-                  <div className="border-t border-gray-100 dark:border-gray-850 pt-6 flex flex-col items-end gap-3">
+                  <div className="border-t border-gray-100 dark:border-gray-850 pt-6 flex flex-col items-end gap-3 w-full">
+                    {warnings.length > 0 && showWarningsConfirm && (
+                      <div className="w-full p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/15 border border-amber-200 dark:border-amber-900/30 text-amber-800 dark:text-amber-400 space-y-2">
+                        <h4 className="text-xs font-black flex items-center gap-1">
+                          <AlertCircle size={14} /> Pre-Import Validation Warnings ({warnings.length}):
+                        </h4>
+                        <ul className="list-disc pl-5 text-[10px] space-y-1 max-h-[140px] overflow-y-auto font-medium">
+                          {warnings.map((w, idx) => (
+                            <li key={idx}>{w}</li>
+                          ))}
+                        </ul>
+                        <p className="text-[10px] text-amber-600 dark:text-amber-500 font-bold pt-1">
+                          You can still import the valid rows by clicking "Force Import anyway" below. Invalid rows will be skipped and logged.
+                        </p>
+                      </div>
+                    )}
+
                     {importStatus && (
                       <div
                         className={`w-full p-4 rounded-2xl flex items-center gap-3 border ${
@@ -423,21 +489,43 @@ export default function BulkImportPage() {
                       </div>
                     )}
 
-                    <button
-                      onClick={handleStartImport}
-                      disabled={importing}
-                      className="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black rounded-2xl shadow-lg shadow-emerald-600/20 hover:shadow-emerald-700/30 transition-all flex items-center gap-2 disabled:opacity-50"
-                    >
-                      {importing ? (
-                        <>
-                          <Loader2 size={14} className="animate-spin" /> Launching Import...
-                        </>
-                      ) : (
-                        <>
-                          Start Spreadsheet Import <ArrowRight size={14} />
-                        </>
+                    <div className="flex gap-3">
+                      {showWarningsConfirm && (
+                        <button
+                          onClick={() => {
+                            setShowWarningsConfirm(false);
+                            setWarnings([]);
+                          }}
+                          className="px-5 py-3.5 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-black rounded-2xl transition-all"
+                        >
+                          Cancel
+                        </button>
                       )}
-                    </button>
+                      
+                      <button
+                        onClick={handleStartImport}
+                        disabled={importing}
+                        className={`px-6 py-3.5 text-white text-xs font-black rounded-2xl shadow-lg transition-all flex items-center gap-2 disabled:opacity-50 ${
+                          showWarningsConfirm
+                            ? "bg-amber-600 hover:bg-amber-700 shadow-amber-600/20 hover:shadow-amber-700/30"
+                            : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20 hover:shadow-emerald-700/30"
+                        }`}
+                      >
+                        {importing ? (
+                          <>
+                            <Loader2 size={14} className="animate-spin" /> Processing...
+                          </>
+                        ) : showWarningsConfirm ? (
+                          <>
+                            Force Import anyway <ArrowRight size={14} />
+                          </>
+                        ) : (
+                          <>
+                            Start Spreadsheet Import <ArrowRight size={14} />
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </motion.div>
               )}
