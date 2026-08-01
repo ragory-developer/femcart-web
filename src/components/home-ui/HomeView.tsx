@@ -4,6 +4,24 @@ import React from "react";
 import ComponentRegistry from "./ComponentRegistry";
 import ClientInViewSection from "./ClientInViewSection";
 
+const sectionHeights: Record<string, string> = {
+  Hero: "500px",
+  TrustStrip: "60px",
+  Categories: "200px",
+  FeaturedProducts: "750px",
+  SizeBanner: "180px",
+  BestSellers: "750px",
+  LimitedOffers: "450px",
+  NewArrivals: "750px",
+  Reviews: "450px",
+  WhyShop: "350px",
+  Editorial: "450px",
+  PreOrder: "450px",
+  Social: "300px",
+  Newsletter: "200px",
+  SeoBlock: "250px",
+};
+
 export default function HomeView({
   categories,
   globalSettings,
@@ -57,7 +75,7 @@ export default function HomeView({
 
   return (
     <div className="flex flex-col w-full">
-      {layout.map((section: any) => {
+      {layout.map((section: any, index: number) => {
         if (section.enabled === false) return null;
         const Component = ComponentRegistry[section.type];
         if (!Component) return null;
@@ -89,7 +107,11 @@ export default function HomeView({
         }
 
         return (
-          <ClientInViewSection key={section.id}>
+          <ClientInViewSection
+            key={section.id}
+            minHeight={sectionHeights[section.type] || "100px"}
+            bypass={index < 3}
+          >
             <Component
               {...section.props}
               categories={categories}

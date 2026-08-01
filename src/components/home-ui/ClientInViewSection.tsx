@@ -5,17 +5,21 @@ import { useInView } from "react-intersection-observer";
 
 export default function ClientInViewSection({
   children,
+  minHeight = "100px",
+  bypass = false,
 }: {
   children: React.ReactNode;
+  minHeight?: string;
+  bypass?: boolean;
 }) {
   const { ref, inView } = useInView({
     triggerOnce: true,
-    rootMargin: "200px 0px",
+    rootMargin: "600px 0px",
   });
 
   return (
-    <div ref={ref} className="min-h-[100px]">
-      {inView ? children : null}
+    <div ref={ref} style={bypass ? undefined : { minHeight }}>
+      {bypass || inView ? children : null}
     </div>
   );
 }

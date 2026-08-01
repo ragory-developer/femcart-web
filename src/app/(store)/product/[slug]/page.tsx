@@ -1,6 +1,7 @@
 import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
 import ProductDetailPage, {
   generateMetadata as templateGenerateMetadata,
+  getGlobalSettings,
 } from "@/components/product/shared/ProductPageTemplate";
 import { API_URL } from "@/lib/config";
 import { redirect } from "next/navigation";
@@ -16,17 +17,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export default async function ProductSlugPage(props: any) {
-  let settings: any = {};
-  try {
-    const settingsRes = await fetchWithTimeout(
-      `${API_URL}/api/global-settings`,
-      { next: { revalidate: 3600 } },
-    );
-    if (settingsRes.ok) {
-      const json = await settingsRes.json();
-      settings = json.data || {};
-    }
-  } catch (e) {}
+  const settings = await getGlobalSettings();
 
   if (
     settings.permalink_structure === "flat" ||

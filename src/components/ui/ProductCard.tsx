@@ -166,20 +166,6 @@ function ProductCard({
   const settings = useSettingsStore(useShallow((state) => state.settings));
   const queryClient = useQueryClient();
 
-  const handleMouseEnter = () => {
-    if (prefetch && product?.slug) {
-      queryClient.prefetchQuery({
-        queryKey: ["product", product.slug],
-        queryFn: async () => {
-          const res = await fetch(`${API_URL}/api/products/${product.slug}`);
-          const json = await res.json();
-          return json.data;
-        },
-        staleTime: 60 * 1000, // 1 minute
-      });
-    }
-  };
-
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -354,7 +340,6 @@ function ProductCard({
   return (
     <div
       className="group relative h-full flex flex-col"
-      onMouseEnter={handleMouseEnter}
     >
       {/* Absolute overlay link covering the entire card */}
       <Link

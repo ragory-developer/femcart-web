@@ -114,20 +114,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [imgError, setImgError] = useState(false);
   const queryClient = useQueryClient();
 
-  const handleMouseEnter = useCallback(() => {
-    if (prefetch && product?.slug) {
-      queryClient.prefetchQuery({
-        queryKey: ["product", product.slug],
-        queryFn: async () => {
-          const res = await fetch(`${API_URL}/api/products/${product.slug}`);
-          const json = await res.json();
-          return json.data;
-        },
-        staleTime: 60 * 1000, // cache for 1 minute
-      });
-    }
-  }, [product.slug, prefetch, queryClient]);
-
   const imageSrc = imgError ? PLACEHOLDER_IMAGE : getProductImage(product);
   const { displayPrice, originalPrice, discountPercent } =
     getPriceInfo(product);
@@ -180,7 +166,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       className="group relative flex flex-col w-full h-full transition-all duration-300 hover:-translate-y-1 focus-within:ring-2 focus-within:ring-pink-500/50 bg-white"
-      onMouseEnter={handleMouseEnter}
     >
       {/* Absolute overlay link covering the entire card */}
       <Link

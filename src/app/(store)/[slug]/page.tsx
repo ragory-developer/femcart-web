@@ -4,6 +4,8 @@ export const dynamic = "force-dynamic";
 import PageTemplate from "@/components/page/PageTemplate";
 import ProductDetailPage, {
   generateMetadata as productGenerateMetadata,
+  getProduct,
+  getGlobalSettings,
 } from "@/components/product/shared/ProductPageTemplate";
 import { API_URL } from "@/lib/config";
 import { Metadata } from "next";
@@ -16,17 +18,7 @@ type Props = {
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const resolvedParams = await props.params;
 
-  let settings: any = {};
-  try {
-    const settingsRes = await fetchWithTimeout(
-      `${API_URL}/api/global-settings`,
-      { next: { revalidate: 3600 } },
-    );
-    if (settingsRes.ok) {
-      const json = await settingsRes.json();
-      settings = json.data || {};
-    }
-  } catch (e) {}
+  const settings = await getGlobalSettings();
 
   const isFlatStructure =
     settings.permalink_structure === "flat" || !settings.permalink_structure;
@@ -73,17 +65,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function RootSlugPage(props: any) {
   const resolvedParams = await props.params;
 
-  let settings: any = {};
-  try {
-    const settingsRes = await fetchWithTimeout(
-      `${API_URL}/api/global-settings`,
-      { next: { revalidate: 3600 } },
-    );
-    if (settingsRes.ok) {
-      const json = await settingsRes.json();
-      settings = json.data || {};
-    }
-  } catch (e) {}
+  const settings = await getGlobalSettings();
 
   const isFlatStructure =
     settings.permalink_structure === "flat" || !settings.permalink_structure;
@@ -91,23 +73,15 @@ export default async function RootSlugPage(props: any) {
   let isProduct = false;
   let shouldRedirectToProduct = false;
 
-  // 1. Try fetching Product
-  try {
-    const res = await fetchWithTimeout(
-      `${API_URL}/api/products/${resolvedParams.slug}`,
-      { next: { revalidate: 0 } },
-    );
-    if (res.ok) {
-      const json = await res.json();
-      if (json.success && json.data) {
-        if (!isFlatStructure) {
-          shouldRedirectToProduct = true;
-        } else {
-          isProduct = true;
-        }
-      }
+  // 1. Try fetching Product using cached getProduct
+  const productData = await getProduct(resolvedParams.slug);
+  if (productData) {
+    if (!isFlatStructure) {
+      shouldRedirectToProduct = true;
+    } else {
+      isProduct = true;
     }
-  } catch (e) {}
+  }
 
   if (shouldRedirectToProduct) {
     // If structure is 'product', redirect from flat URL to product URL

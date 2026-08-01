@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { cache } from "react";
 import ProductOverview from "@/components/product/ProductOverview";
 import ProductSchema from "@/components/product/shared/ProductSchema";
 import ProductViewTracker from "@/components/product/shared/ProductViewTracker";
@@ -84,7 +85,7 @@ export async function generateMetadata({
   };
 }
 
-async function getProduct(slug: string) {
+export const getProduct = cache(async (slug: string) => {
   try {
     const res = await fetch(`${API_URL}/api/products/${slug}`, {
       next: { revalidate: 60 },
@@ -97,9 +98,9 @@ async function getProduct(slug: string) {
     console.error("Failed to fetch product:", error);
     return null;
   }
-}
+});
 
-async function getGlobalSettings() {
+export const getGlobalSettings = cache(async () => {
   try {
     const res = await fetch(`${API_URL}/api/global-settings`, {
       next: { revalidate: 3600 },
@@ -111,7 +112,7 @@ async function getGlobalSettings() {
   } catch {
     return {};
   }
-}
+});
 
 // Function getAllProducts removed to optimize payload
 

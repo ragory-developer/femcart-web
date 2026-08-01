@@ -60,8 +60,10 @@ export default async function RootLayout({
       }
     }
   } catch (err: any) {
-    if (err?.cause?.code !== "ECONNREFUSED") {
+    if (err?.cause?.code !== "ECONNREFUSED" && err?.name !== "AbortError") {
       console.error("Failed to fetch global settings in layout:", err);
+    } else {
+      console.warn("Backend API unreachable at /api/global-settings (using fallback layout settings)");
     }
   }
 
