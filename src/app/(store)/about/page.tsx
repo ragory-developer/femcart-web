@@ -10,19 +10,19 @@ export default function AboutPage() {
   return (
     <div className="bg-[#FFFDFB] dark:bg-[#0a0a0a] min-h-[100dvh] font-sans">
       {/* Hero Section */}
-      <div className="relative overflow-hidden pt-8 md:pt-16 pb-10 md:pb-20">
+      <div className="relative overflow-hidden pt-6 md:pt-10 pb-8 md:pb-12">
         <div className="absolute inset-0 bg-gradient-to-b from-pink-500/5 to-transparent dark:from-pink-500/10" />
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <span className="inline-block py-1.5 px-4 rounded-full bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 font-bold text-[11px] tracking-widest uppercase mb-6 border border-pink-200 dark:border-pink-800">
               Our Story
             </span>
-            <h1 className="text-4xl md:text-7xl font-black text-gray-900 dark:text-white tracking-tight leading-[1.1] mb-4 md:mb-6 uppercase font-serif">
+            <h1 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight leading-[1.1] mb-4 md:mb-6 uppercase font-serif">
               Welcome to <span className="text-pink-500 italic block mt-2">Femcart</span>
             </h1>
             <p
               suppressHydrationWarning
-              className="text-base md:text-xl text-gray-600 dark:text-gray-400 leading-relaxed font-medium mx-auto max-w-2xl"
+              className="text-[10px] md:text-[11px] text-gray-600 dark:text-gray-400 leading-relaxed font-medium mx-auto max-w-2xl"
             >
               {settings.footer_about_text ||
                 "Your trusted online destination for premium intimate apparel in Bangladesh. We believe every woman deserves to feel comfortable, confident, and beautiful from the inside out."}
@@ -32,7 +32,7 @@ export default function AboutPage() {
       </div>
 
       {/* Main Content */}
-      <div className="py-8 md:py-16 bg-white dark:bg-[#0a0a0a]">
+      <div className="py-6 md:py-10 bg-white dark:bg-[#0a0a0a]">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-16 items-center">
             {/* Image Block */}
@@ -98,44 +98,44 @@ export default function AboutPage() {
       </div>
 
       {/* Value Propositions */}
-      <div className="py-10 md:py-16 bg-rose-50/30 dark:bg-[#0a0a0a]">
+      <div className="py-8 md:py-12 bg-rose-50/30 dark:bg-[#0a0a0a]">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {/* Value 1 */}
-            <div className="bg-white dark:bg-gray-900 p-5 md:p-6 rounded-3xl md:rounded-[2rem] border border-rose-100 dark:border-gray-800 shadow-xl shadow-pink-500/5 hover:-translate-y-2 hover:border-pink-300 hover:shadow-2xl hover:shadow-pink-500/10 transition-all duration-300">
+            <div className="bg-white dark:bg-gray-900 p-4 md:p-5 rounded-3xl md:rounded-[2rem] border border-rose-100 dark:border-gray-800 shadow-xl shadow-pink-500/5 hover:-translate-y-2 hover:border-pink-300 hover:shadow-2xl hover:shadow-pink-500/10 transition-all duration-300">
               <div className="w-12 h-12 md:w-14 md:h-14 bg-pink-100 dark:bg-pink-900/30 rounded-2xl flex items-center justify-center text-pink-500 mb-4 md:mb-6">
                 <Heart size={24} className="md:w-7 md:h-7" />
               </div>
-              <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white mb-3 md:mb-4 uppercase tracking-tight">
+              <h3 className="text-base md:text-lg font-black text-gray-900 dark:text-white mb-3 md:mb-4 uppercase tracking-tight">
                 Perfect Fit
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base font-medium">
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-[10px] md:text-[11px] font-medium">
                 Thoughtfully crafted pieces designed to provide unmatched softness and support for your unique body type.
               </p>
             </div>
 
             {/* Value 2 */}
-            <div className="bg-white dark:bg-gray-900 p-5 md:p-6 rounded-3xl md:rounded-[2rem] border border-rose-100 dark:border-gray-800 shadow-xl shadow-pink-500/5 hover:-translate-y-2 hover:border-pink-300 hover:shadow-2xl hover:shadow-pink-500/10 transition-all duration-300">
+            <div className="bg-white dark:bg-gray-900 p-4 md:p-5 rounded-3xl md:rounded-[2rem] border border-rose-100 dark:border-gray-800 shadow-xl shadow-pink-500/5 hover:-translate-y-2 hover:border-pink-300 hover:shadow-2xl hover:shadow-pink-500/10 transition-all duration-300">
               <div className="w-12 h-12 md:w-14 md:h-14 bg-pink-100 dark:bg-pink-900/30 rounded-2xl flex items-center justify-center text-pink-500 mb-4 md:mb-6">
                 <Sparkles size={24} className="md:w-7 md:h-7" />
               </div>
-              <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white mb-3 md:mb-4 uppercase tracking-tight">
+              <h3 className="text-base md:text-lg font-black text-gray-900 dark:text-white mb-3 md:mb-4 uppercase tracking-tight">
                 Premium Quality
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base font-medium">
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-[10px] md:text-[11px] font-medium">
                 We source the finest, most durable fabrics to ensure your intimate wear stays beautiful wash after wash.
               </p>
             </div>
 
             {/* Value 3 */}
-            <div className="bg-white dark:bg-gray-900 p-5 md:p-6 rounded-3xl md:rounded-[2rem] border border-rose-100 dark:border-gray-800 shadow-xl shadow-pink-500/5 hover:-translate-y-2 hover:border-pink-300 hover:shadow-2xl hover:shadow-pink-500/10 transition-all duration-300">
+            <div className="bg-white dark:bg-gray-900 p-4 md:p-5 rounded-3xl md:rounded-[2rem] border border-rose-100 dark:border-gray-800 shadow-xl shadow-pink-500/5 hover:-translate-y-2 hover:border-pink-300 hover:shadow-2xl hover:shadow-pink-500/10 transition-all duration-300">
               <div className="w-12 h-12 md:w-14 md:h-14 bg-pink-100 dark:bg-pink-900/30 rounded-2xl flex items-center justify-center text-pink-500 mb-4 md:mb-6">
                 <Star size={24} className="md:w-7 md:h-7" />
               </div>
-              <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white mb-3 md:mb-4 uppercase tracking-tight">
+              <h3 className="text-base md:text-lg font-black text-gray-900 dark:text-white mb-3 md:mb-4 uppercase tracking-tight">
                 Private & Secure
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm md:text-base font-medium">
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-[10px] md:text-[11px] font-medium">
                 Shop with total peace of mind. We ensure discreet packaging and completely secure transactions for every order.
               </p>
             </div>
