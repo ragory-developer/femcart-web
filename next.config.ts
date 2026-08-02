@@ -102,6 +102,11 @@ const nextConfig: NextConfig = {
         hostname: "femecart.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.shopify.com",
+        pathname: "/**",
+      },
     ],
   },
 };

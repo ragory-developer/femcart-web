@@ -315,8 +315,8 @@ function CheckoutContent() {
   return (
     <div className="bg-gray-50/50 dark:bg-gray-950 min-h-[100dvh] pb-24 relative">
       {/* Header */}
-      <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 py-6">
-        <div className="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 py-3 lg:py-5">
+        <div className="container mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4">
           <Link
             href="/"
             className="text-2xl font-black text-blue-600 tracking-tighter italic"
@@ -341,8 +341,8 @@ function CheckoutContent() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6 lg:py-12">
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+      <div className="container mx-auto px-4 py-4 lg:py-6">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 items-start">
           {/* Main Checkout Flow (Left Column) */}
           <div className="flex-1 w-full space-y-6">
             {!activeUser &&

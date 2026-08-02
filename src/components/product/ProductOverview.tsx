@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 
 const FlashSaleBanner = ({
   endTime,
@@ -270,12 +270,76 @@ export default function ProductOverview({
   forceShowElements?: boolean;
 }) {
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
+  const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
   const [activeGalleryImage, setActiveGalleryImage] = useState<string | null>(
     null,
   );
   const [isExpanded, setIsExpanded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  const enabledVariants =
+    product?.variants?.filter((v: any) => v.enabled) || [];
+
+  // Initialize selected variant and attributes on mount if none is selected
+  useEffect(() => {
+    if (product?.productType === "VARIABLE" && enabledVariants.length > 0 && !selectedVariant) {
+      const firstVariant = enabledVariants[0];
+      const initialAttrs: Record<string, string> = {};
+      firstVariant.attributes?.forEach((a: any) => {
+        initialAttrs[a.name] = a.value;
+      });
+      setSelectedAttributes(initialAttrs);
+      setSelectedVariant(firstVariant);
+    }
+  }, [product?.productType, enabledVariants, selectedVariant]);
+
+  // Group attributes for the UI
+  const groupedAttributes = useMemo(() => {
+    if (product?.productType !== "VARIABLE" || !enabledVariants.length) return {};
+    const groups: Record<string, string[]> = {};
+    enabledVariants.forEach((v: any) => {
+      v.attributes?.forEach((a: any) => {
+        if (!groups[a.name]) groups[a.name] = [];
+        if (!groups[a.name].includes(a.value)) {
+          groups[a.name].push(a.value);
+        }
+      });
+    });
+    return groups;
+  }, [product?.productType, enabledVariants]);
+
+  const handleAttributeSelect = useCallback(
+    (name: string, value: string) => {
+      const newAttrs = { ...selectedAttributes, [name]: value };
+
+      // Find an exact match for the new combination
+      const exactMatch = enabledVariants.find((v: any) => {
+        return Object.entries(newAttrs).every(([k, val]) =>
+          v.attributes?.some((a: any) => a.name === k && a.value === val),
+        );
+      });
+
+      if (exactMatch) {
+        setSelectedAttributes(newAttrs);
+        setSelectedVariant(exactMatch);
+      } else {
+        // Fallback: pivot to the first variant that has the newly selected value
+        const fallbackVariant = enabledVariants.find((v: any) =>
+          v.attributes?.some((a: any) => a.name === name && a.value === value),
+        );
+        if (fallbackVariant) {
+          const fallbackAttrs: Record<string, string> = {};
+          fallbackVariant.attributes?.forEach((a: any) => {
+            fallbackAttrs[a.name] = a.value;
+          });
+          setSelectedAttributes(fallbackAttrs);
+          setSelectedVariant(fallbackVariant);
+        }
+      }
+    },
+    [selectedAttributes, enabledVariants],
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -286,9 +350,6 @@ export default function ProductOverview({
     setActiveGalleryImage(null);
     setImgError(false);
   }, [selectedVariant]);
-
-  const enabledVariants =
-    product?.variants?.filter((v: any) => v.enabled) || [];
 
   if (!product) return null;
   const {
@@ -385,7 +446,12 @@ export default function ProductOverview({
     : typeof product.images === "string"
       ? JSON.parse(product.images || "[]")
       : [];
-  const allImages = [product.image, ...rawImages].filter(Boolean);
+  
+  const variantImages = enabledVariants
+    .map((v: any) => v.image)
+    .filter(Boolean);
+
+  const allImages = [product.image, ...rawImages, ...variantImages].filter(Boolean);
   const uniqueImages = Array.from(
     new Set(
       allImages.map((img) => (typeof img === "string" ? img.trim() : "")),
@@ -714,90 +780,107 @@ export default function ProductOverview({
         return productType === "VARIABLE" && enabledVariants.length > 0 ? (
           <div
             key={elementId}
-            className="mb-3 sm:mb-4 bg-gray-50 dark:bg-gray-900/50 p-3 sm:p-4 rounded border border-gray-100 dark:border-gray-800"
+            className="mb-3 sm:mb-4 bg-gray-50 dark:bg-gray-900/50 p-3 sm:p-5 rounded border border-gray-100 dark:border-gray-800"
           >
-            <h3 className="text-[10px] sm:text-xs font-black text-gray-400 uppercase tracking-[0.2em] mb-2 sm:mb-3 px-1">
-              Select Variation
-            </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
-              {enabledVariants.map((v: any) => {
-                const isSelected = selectedVariant?.id === v.id;
-                const variantName = v.attributes
-                  ?.map((a: any) => a.value)
-                  .join(" / ");
-                return (
-                  <button
-                    key={v.id}
-                    onClick={() => setSelectedVariant(isSelected ? null : v)}
-                    className={`flex flex-col gap-3 p-3 rounded border-2 text-left transition-all relative group ${
-                      isSelected
-                        ? "border-indigo-600 bg-white dark:bg-gray-800 shadow-xl ring-4 ring-indigo-500/10 scale-105 z-10"
-                        : "border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 hover:border-indigo-300 dark:hover:border-indigo-700"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      {v.image ? (
-                        <div className="relative w-12 h-12 rounded-sm overflow-hidden shrink-0 border border-gray-100 dark:border-gray-700 bg-white shadow-sm">
-                          <Image
-                            src={resolveImageUrl(v.image)}
-                            alt={variantName}
-                            fill
-                            sizes="3rem"
-                            className="object-contain p-1"
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-12 h-12 rounded-sm bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400">
-                          <Zap size={16} />
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p
-                          className={`text-xs font-black truncate uppercase tracking-tight ${isSelected ? "text-indigo-600" : "text-gray-500"}`}
-                        >
-                          {variantName || "Standard"}
-                        </p>
-                        {(() => {
-                          const vHasSpecial = isSpecialActive(
-                            v.specialPrice,
-                            v.specialPriceStart,
-                            v.specialPriceEnd,
-                          );
-                          if (vHasSpecial) {
-                            return (
-                              <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                                <span
-                                  className={`text-sm font-black ${isSelected ? "text-rose-600 dark:text-rose-400" : "text-rose-500"}`}
-                                >
-                                  ৳ {v.specialPrice?.toFixed(0)}
-                                </span>
-                                <span
-                                  className={`text-[10px] font-medium line-through ${isSelected ? "text-gray-400" : "text-gray-300"}`}
-                                >
-                                  ৳ {v.price?.toFixed(0)}
-                                </span>
-                              </div>
-                            );
-                          }
-                          return (
-                            <p
-                              className={`text-sm font-black mt-0.5 ${isSelected ? "text-gray-900 dark:text-white" : "text-gray-400"}`}
-                            >
-                              ৳ {v.price?.toFixed(0)}
-                            </p>
-                          );
-                        })()}
-                      </div>
+            {Object.entries(groupedAttributes).map(([attrName, values]: [string, any]) => (
+              <div key={attrName} className="mb-4 sm:mb-5 last:mb-0">
+                <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2.5 sm:mb-3 px-1">
+                  Select {attrName}
+                </h3>
+                <div className="flex flex-wrap gap-2 sm:gap-2.5">
+                  {values.map((val: string) => {
+                    const isSelected = selectedAttributes[attrName] === val;
+                    // Check if this specific value is available in combination with OTHER currently selected attributes
+                    const isAvailable = enabledVariants.some((v: any) => {
+                      const hasThisValue = v.attributes?.some((a: any) => a.name === attrName && a.value === val);
+                      if (!hasThisValue) return false;
+                      
+                      // Check other attributes (excluding the current one we are evaluating)
+                      return Object.entries(selectedAttributes).every(([k, vVal]) => {
+                        if (k === attrName) return true;
+                        return v.attributes?.some((a: any) => a.name === k && a.value === vVal);
+                      });
+                    });
+
+                    return (
+                      <button
+                        key={val}
+                        onClick={() => handleAttributeSelect(attrName, val)}
+                        className={`px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all border-2 relative overflow-hidden group ${
+                          isSelected
+                            ? "border-gray-900 bg-gray-900 text-white dark:border-white dark:bg-white dark:text-gray-900 shadow-md scale-[1.02] ring-2 ring-gray-900/10 dark:ring-white/10"
+                            : isAvailable 
+                              ? "border-gray-200 text-gray-600 bg-white hover:border-gray-900 hover:text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:border-white dark:hover:text-white hover:shadow-sm"
+                              : "border-gray-100 text-gray-300 bg-gray-50/50 cursor-not-allowed dark:bg-gray-900/30 dark:border-gray-800 dark:text-gray-600 line-through decoration-1"
+                        }`}
+                      >
+                        {val}
+                        {isSelected && (
+                          <div className="absolute inset-0 bg-white/10 dark:bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+            
+            {selectedVariant && (
+              <div className="mt-4 pt-4 sm:mt-5 sm:pt-5 border-t border-gray-200 dark:border-gray-700">
+                <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2.5 sm:mb-3 px-1">
+                  Selected Variant
+                </h3>
+                <div className="flex items-center gap-3 sm:gap-4 bg-white dark:bg-gray-800 p-2 sm:p-3 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
+                  {selectedVariant.image ? (
+                    <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded overflow-hidden shrink-0 border border-gray-100 dark:border-gray-700 bg-white">
+                      <Image
+                        src={resolveImageUrl(selectedVariant.image)}
+                        alt={selectedVariant.attributes?.map((a: any) => a.value).join(" / ")}
+                        fill
+                        sizes="(max-width: 640px) 3rem, 3.5rem"
+                        className="object-contain p-1"
+                      />
                     </div>
-                    {isSelected && (
-                      <div className="absolute -top-3 -right-3 bg-indigo-600 text-white w-7 h-7 rounded-full shadow-lg flex items-center justify-center ring-4 ring-white dark:ring-gray-950">
-                        <Check size={14} strokeWidth={4} />
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+                  ) : (
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded bg-gray-50 dark:bg-gray-900/50 flex items-center justify-center text-gray-300">
+                      <Zap size={18} className="sm:w-5 sm:h-5" />
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs sm:text-sm font-black truncate uppercase tracking-tight text-gray-900 dark:text-white">
+                      {selectedVariant.attributes?.map((a: any) => a.value).join(" / ") || "Standard"}
+                    </p>
+                    {(() => {
+                      const vHasSpecial = isSpecialActive(
+                        selectedVariant.specialPrice,
+                        selectedVariant.specialPriceStart,
+                        selectedVariant.specialPriceEnd,
+                      );
+                      if (vHasSpecial) {
+                        return (
+                          <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5 sm:mt-1 flex-wrap">
+                            <span className="text-sm sm:text-base font-black text-rose-600 dark:text-rose-400">
+                              ৳ {selectedVariant.specialPrice?.toFixed(0)}
+                            </span>
+                            <span className="text-[10px] sm:text-xs font-medium line-through text-gray-400">
+                              ৳ {selectedVariant.price?.toFixed(0)}
+                            </span>
+                          </div>
+                        );
+                      }
+                      return (
+                        <p className="text-sm sm:text-base font-black mt-0.5 sm:mt-1 text-gray-900 dark:text-white">
+                          ৳ {selectedVariant.price?.toFixed(0)}
+                        </p>
+                      );
+                    })()}
+                  </div>
+                  <div className="shrink-0 flex items-center justify-center text-green-500 bg-green-50 dark:bg-green-500/10 w-6 h-6 sm:w-8 sm:h-8 rounded-full">
+                    <Check size={14} strokeWidth={3} />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ) : null;
 

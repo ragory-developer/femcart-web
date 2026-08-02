@@ -2,7 +2,7 @@ import { fetchWithTimeout } from "@/lib/fetchWithTimeout";
 import { API_URL } from "@/lib/config";
 import parse, { attributesToProps, Element, Text } from "html-react-parser";
 import type { Metadata } from "next";
-import { Outfit, Manrope } from "next/font/google";
+import { Outfit, Manrope, Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -18,6 +18,13 @@ const manrope = Manrope({
   variable: "--font-manrope",
   display: "swap",
   preload: true,
+});
+const notoSansBengali = Noto_Sans_Bengali({
+  weight: ["400", "500", "600", "700"],
+  subsets: ["bengali"],
+  variable: "--font-noto-bengali",
+  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -117,7 +124,7 @@ export default async function RootLayout({
         {headerCode ? parse(headerCode, getParseOptions(true)) : null}
       </head>
       <body
-        className={`${manrope.variable} ${outfit.variable} antialiased selection:bg-pink-500/30 min-h-[100dvh] flex flex-col font-sans overflow-x-clip pt-[env(safe-area-inset-top)]`}
+        className={`${outfit.variable} ${manrope.variable} ${notoSansBengali.variable} antialiased selection:bg-pink-500/30 min-h-[100dvh] flex flex-col font-sans overflow-x-clip pt-[env(safe-area-inset-top)]`}
       >
         <NextTopLoader color="#ff0798ff" showSpinner={false} />
         <ReactQueryProvider>

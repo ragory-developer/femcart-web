@@ -6,6 +6,7 @@ interface NavigationState {
   bottomNavbarItems: any[];
   footerSections: any[];
   categories: any[];
+  brands: any[];
   categoriesLoading: boolean;
   loading: boolean;
   isHeroCategoryVisible: boolean;
@@ -18,6 +19,7 @@ export const useNavigationStore = create<NavigationState>((set) => ({
   bottomNavbarItems: [],
   footerSections: [],
   categories: [],
+  brands: [],
   categoriesLoading: false,
   loading: false,
   isHeroCategoryVisible: false,

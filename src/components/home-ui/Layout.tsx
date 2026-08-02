@@ -19,6 +19,7 @@ import "lenis/dist/lenis.css";
 import { useGlobalSearchStore } from "@/store/globalSearchStore";
 import { useCartStore } from "@/store/cartStore";
 import GlobalSearch from "@/components/search/GlobalSearch";
+import MobileSidebar from "@/components/layout/MobileSidebar";
 import { useNavigationStore } from "@/store/navigationStore";
 import { useSettingsStore } from "@/store/settingsStore";
 import { getFilterUrl } from "@/lib/utils";
@@ -95,7 +96,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               ) : (
                 <>
                   <svg
-                    className="absolute -top-[14px]"
+                    className="absolute -top-[6px]"
                     width="30"
                     height="18"
                     viewBox="0 0 32 20"
@@ -201,63 +202,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <GlobalSearch />
 
       {/* Mobile Menu Drawer */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/50 z-[95] lg:hidden"
-            />
-            <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 left-0 bottom-0 w-[80%] max-w-[300px] bg-white z-[100] lg:hidden flex flex-col shadow-2xl"
-            >
-              <div className="flex items-center justify-between p-6 border-b border-orange-200">
-                <div className="font-serif text-[20px] tracking-wider font-semibold text-pink-500">
-                  Femecart
-                </div>
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 text-text-amber-700 hover:text-pink-500 transition-colors"
-                >
-                  <X size={20} strokeWidth={2} />
-                </button>
-              </div>
-              <nav className="flex flex-col p-6 gap-6 overflow-y-auto">
-                {topNavbarItems?.map((item: any) => (
-                  <React.Fragment key={item.id}>
-                    <Link
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      href={getFilterUrl(item.url || "#")}
-                      className="text-[18px] font-medium text-text-pink-500 hover:text-pink-500 transition-colors"
-                    >
-                      {item.title}
-                    </Link>
-                    {item.children &&
-                      item.children.length > 0 &&
-                      item.children.map((child: any) => (
-                        <Link
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          key={child.id}
-                          href={getFilterUrl(child.url || "#")}
-                          className="text-[16px] font-normal text-text-amber-700 pl-4 hover:text-pink-500 transition-colors"
-                        >
-                          {child.title}
-                        </Link>
-                      ))}
-                  </React.Fragment>
-                ))}
-              </nav>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      <MobileSidebar
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        storeName={settings?.store_name || "Femecart"}
+      />
 
       {/* Main Content */}
       <main className="flex-grow">{children}</main>

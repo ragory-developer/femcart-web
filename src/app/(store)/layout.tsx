@@ -9,7 +9,7 @@ import StoreInitializer from "@/components/providers/StoreInitializer";
 
 async function getNavigationData() {
   try {
-    const [navRes, footerRes, catRes] = await Promise.all([
+    const [navRes, footerRes, catRes, brandRes] = await Promise.all([
       fetchWithTimeout(`${API_URL}/api/navigation/navbar`, {
         next: { revalidate: 60 },
       }),
@@ -19,11 +19,15 @@ async function getNavigationData() {
       fetchWithTimeout(`${API_URL}/api/categories`, {
         next: { revalidate: 60 },
       }),
+      fetchWithTimeout(`${API_URL}/api/brands?limit=50`, {
+        next: { revalidate: 60 },
+      }),
     ]);
 
     const navJson = await navRes.json();
     const footerJson = await footerRes.json();
     const catJson = await catRes.json();
+    const brandJson = await brandRes.json();
 
     const fetchedNav =
       navJson.success && Array.isArray(navJson.data) ? navJson.data : [];
@@ -71,12 +75,23 @@ async function getNavigationData() {
       categories = megamenuData.map(({ icon, ...rest }) => rest);
     }
 
+    let brands = [];
+    if (brandJson.success && Array.isArray(brandJson.data)) {
+      brands = brandJson.data.map((b: any) => ({
+        id: b.id,
+        title: b.name,
+        slug: b.slug,
+        image: b.logo,
+      }));
+    }
+
     return {
       navbarItems: fetchedNav,
       topNavbarItems: topItems,
       bottomNavbarItems: bottomItems,
       footerSections,
       categories,
+      brands,
     };
   } catch (error) {
     console.error("Failed to fetch navigation layout data", error);
@@ -89,6 +104,7 @@ async function getNavigationData() {
       bottomNavbarItems: [],
       footerSections: [],
       categories: safeCategories,
+      brands: [],
     };
   }
 }

@@ -70,7 +70,7 @@ export default function ExplorePage() {
   return (
     <div className="bg-gray-50 dark:bg-gray-950 min-h-[100dvh]">
       {/* Hero Header */}
-      <div className="relative bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-900 pb-12 pt-8 overflow-hidden">
+      <div className="relative bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-900 pb-6 md:pb-12 pt-4 md:pt-8 overflow-hidden">
         {/* Subtle Background Mesh */}
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-[var(--color-lime)]/10 blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-[#13A048]/10 blur-3xl pointer-events-none"></div>
@@ -78,7 +78,7 @@ export default function ExplorePage() {
         <div className="container relative mx-auto px-4">
           <Link
             href="/"
-            className="inline-flex items-center text-[13px] font-bold font-body text-gray-400 hover:text-[var(--color-olive)] dark:hover:text-[var(--color-lime)] transition-colors mb-10 group"
+            className="inline-flex items-center text-[13px] font-bold font-body text-gray-400 hover:text-[var(--color-olive)] dark:hover:text-[var(--color-lime)] transition-colors mb-4 md:mb-10 group"
           >
             <ArrowLeft
               size={16}
@@ -87,44 +87,44 @@ export default function ExplorePage() {
             Back to Home
           </Link>
 
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6">
             <div>
-              <div className="flex items-center gap-3 mb-5">
-                <div className="bg-[var(--color-lime)]/10 p-2.5 rounded-xl text-[var(--color-olive)] dark:text-[var(--color-lime)]">
-                  <LayoutGrid size={20} />
+              <div className="flex items-center gap-3 mb-3 md:mb-5">
+                <div className="bg-[var(--color-lime)]/10 p-2 md:p-2.5 rounded-xl text-[var(--color-olive)] dark:text-[var(--color-lime)]">
+                  <LayoutGrid size={18} className="md:w-5 md:h-5" />
                 </div>
-                <span className="text-[var(--color-olive)] dark:text-[var(--color-lime)] font-black font-display uppercase tracking-[0.25em] text-[11px]">
+                <span className="text-[var(--color-olive)] dark:text-[var(--color-lime)] font-black font-display uppercase tracking-[0.25em] text-[10px] md:text-[11px]">
                   Everything you need
                 </span>
               </div>
-              <h1 className="text-5xl md:text-7xl font-black font-display text-gray-900 dark:text-white tracking-tighter uppercase leading-[0.9]">
+              <h1 className="text-4xl md:text-7xl font-black font-display text-gray-900 dark:text-white tracking-tighter uppercase leading-[0.9]">
                 Explore Our{" "}
-                <span className="text-[var(--color-lime)] italic block mt-2">
+                <span className="text-[var(--color-lime)] italic block mt-1 md:mt-2">
                   Market
                 </span>
               </h1>
-              <p className="text-gray-500 dark:text-gray-400 mt-6 max-w-xl text-[15px] leading-relaxed font-medium font-body">
+              <p className="text-gray-500 dark:text-gray-400 mt-3 md:mt-6 max-w-xl text-[14px] md:text-[15px] leading-relaxed font-medium font-body">
                 Browse our premium selection of fresh groceries, organic
                 produce, household essentials, and trusted premium brands.
               </p>
             </div>
 
-            <div className="bg-white/80 backdrop-blur-md dark:bg-gray-900/80 p-5 rounded-[1.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.04)] dark:shadow-none border border-gray-100 dark:border-gray-800 flex flex-col gap-4">
+            <div className="bg-white/80 backdrop-blur-md dark:bg-gray-900/80 p-4 md:p-5 rounded-2xl md:rounded-[1.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.04)] dark:shadow-none border border-gray-100 dark:border-gray-800 flex flex-col gap-4 mt-2 md:mt-0">
               <div className="flex items-center gap-5">
                 <div className="text-right">
-                  <p className="text-xs font-black font-display text-gray-400 uppercase tracking-widest">
+                  <p className="text-[10px] md:text-xs font-black font-display text-gray-400 uppercase tracking-widest">
                     Categories
                   </p>
-                  <p className="text-xl font-black font-display text-[var(--color-olive)] dark:text-[var(--color-lime)] line-none">
+                  <p className="text-lg md:text-xl font-black font-display text-[var(--color-olive)] dark:text-[var(--color-lime)] line-none">
                     {categories.length}
                   </p>
                 </div>
-                <div className="h-8 w-px bg-gray-100 dark:bg-gray-700"></div>
+                <div className="h-6 md:h-8 w-px bg-gray-100 dark:bg-gray-700"></div>
                 <div className="text-left">
-                  <p className="text-xs font-black font-display text-gray-400 uppercase tracking-widest">
+                  <p className="text-[10px] md:text-xs font-black font-display text-gray-400 uppercase tracking-widest">
                     Brands
                   </p>
-                  <p className="text-xl font-black font-display text-[#13A048] dark:text-[#13A048] line-none">
+                  <p className="text-lg md:text-xl font-black font-display text-[#13A048] dark:text-[#13A048] line-none">
                     {brands.length}
                   </p>
                 </div>
@@ -134,11 +134,11 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-8 md:py-16">
         {/* Categories Section */}
-        <div className="mb-10 flex items-center gap-4">
-          <LayoutGrid className="text-[#13A048]" size={36} />
-          <h2 className="text-4xl md:text-5xl font-black font-display text-gray-900 dark:text-white uppercase tracking-tight">
+        <div className="mb-6 md:mb-10 flex items-center gap-3 md:gap-4">
+          <LayoutGrid className="text-[#13A048] w-7 h-7 md:w-9 md:h-9" />
+          <h2 className="text-3xl md:text-5xl font-black font-display text-gray-900 dark:text-white uppercase tracking-tight">
             Categories
           </h2>
         </div>

@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
+import Swal from "sweetalert2";
 import {
   Upload,
   Database,
@@ -118,12 +119,12 @@ export default function BulkImportPage() {
         setSheetHeaders(json.headers || []);
         setPreviewRows(json.previewRows || []);
       } else {
-        alert(json.message || "Failed to parse file headers.");
+        Swal.fire("Error", json.message || "Failed to parse file headers.", "error");
         setFile(null);
       }
     } catch (err: any) {
       console.error(err);
-      alert("An error occurred while loading headers.");
+      Swal.fire("Error", "An error occurred while loading headers.", "error");
       setFile(null);
     } finally {
       setParsingHeaders(false);
@@ -216,7 +217,7 @@ export default function BulkImportPage() {
         .map((f) => f.label);
 
       if (missing.length > 0) {
-        alert(`Please map the following required fields: ${missing.join(", ")}`);
+        Swal.fire("Missing Fields", `Please map the following required fields: ${missing.join(", ")}`, "warning");
         return;
       }
     }
@@ -419,8 +420,8 @@ export default function BulkImportPage() {
                   </h3>
                   {importPlatform === "CUSTOM" && (
                     <button
-                      onClick={() => alert("Template download feature coming soon!")}
-                      className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-1 bg-blue-50 dark:bg-blue-950/30 px-3 py-1.5 rounded-lg border border-blue-100 dark:border-blue-900/50 transition-all"
+                      onClick={() => Swal.fire("Coming Soon", "Template download feature coming soon!", "info")}
+                      className="flex items-center justify-center gap-2 px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 text-xs font-bold rounded-xl shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                     >
                       <Download size={14} />
                       Download {importType === "PRODUCTS" ? "Product" : "Order"} Template

@@ -96,31 +96,26 @@ export default async function ProductsPage({
   if (params.sort) fetchUrl.searchParams.set("sort", params.sort);
 
   return (
-    <div className="bg-[#FFFDFB] dark:bg-[#0a0a0a] min-h-[100dvh] py-16">
+    <div className="bg-[#FFFDFB] dark:bg-[#0a0a0a] min-h-[100dvh] py-4 lg:py-8">
       <div className="container mx-auto px-2 sm:px-6 max-w-[1600px]">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-20 border-b border-gray-100 dark:border-gray-900 pb-12">
-          <div>
+        <div className="relative hidden sm:flex items-center justify-center mb-4 lg:mb-8 border-b border-gray-100 dark:border-gray-900 pb-4 lg:pb-6">
+          <div className="absolute left-0">
             <Link
               href="/"
-              className="inline-flex items-center text-[10px] font-black text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors mb-6 uppercase tracking-[0.3em]"
+              className="inline-flex items-center text-[11px] font-black text-gray-700 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 px-3 sm:px-4 py-2 rounded-full transition-colors uppercase tracking-[0.2em]"
             >
-              <ArrowLeft size={14} className="mr-2" /> Back to Home
+              <ArrowLeft size={14} className="sm:mr-2" /> <span className="hidden sm:inline">Back to Home</span>
             </Link>
-            <h1 className="text-5xl lg:text-[5rem] leading-[1] font-black tracking-tighter uppercase text-gray-900 dark:text-white">
-              Shop All
-            </h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-6 font-medium max-w-md text-sm leading-relaxed">
-              Discover our curated selection of premium organic products,
-              sourced directly from sustainable farms for your healthy
-              lifestyle.
-            </p>
           </div>
+          <h1 className="text-xl sm:text-2xl font-black tracking-tight uppercase text-gray-900 dark:text-white text-center px-10 sm:px-32">
+            Discover Your Confidence
+          </h1>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-14">
           {/* Sidebar - Desktop */}
-          <aside className="hidden lg:block sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto w-72 shrink-0 lg:border-r lg:border-gray-100 lg:dark:border-gray-800/60 lg:pr-8">
+          <aside className="hidden lg:block sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto w-72 shrink-0 lg:border-r lg:border-gray-100 lg:dark:border-gray-800/60 lg:pr-8 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&::-webkit-scrollbar-thumb]:bg-gray-800 [&::-webkit-scrollbar-thumb]:rounded-full">
             <Suspense
               fallback={
                 <div className="w-full h-[100dvh] animate-pulse bg-gray-50 dark:bg-gray-900" />

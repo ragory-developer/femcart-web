@@ -14,7 +14,8 @@ import {
   Star,
 } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import NextImage from "next/image";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import Swal from "sweetalert2";
 import { UndoToast } from "@/components/ui/UndoToast";
 import { resolveImageUrl } from "@/lib/utils";
@@ -67,9 +68,9 @@ export default function AdminProductsPage() {
   const { settings } = useSettingsStore();
 
   // Columns layout configuration
-  const columns: DataTableColumn<Product>[] = [
+  const columns = useMemo<DataTableColumn<Product>[]>(() => [
     {
-      key: "image",
+      key: "product",
       header: "Product",
       thClassName: "w-[10%]",
       render: (product) => (
@@ -81,16 +82,22 @@ export default function AdminProductsPage() {
           }
           target="_blank"
           rel="noopener noreferrer"
-          className="w-14 h-14 rounded-xl border border-gray-200/80 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 flex items-center justify-center overflow-hidden shrink-0 shadow-sm group-hover:shadow-md transition-all duration-300 cursor-pointer block"
+          className="flex items-center gap-3"
         >
           {product.image ? (
-            <img
-              src={resolveImageUrl(product.image)}
-              alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            />
+            <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-750 flex-shrink-0 group shadow-sm">
+              <NextImage
+                src={resolveImageUrl(product.image) || "/placeholder.png"}
+                alt={product.name || "Product"}
+                width={50}
+                height={50}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            </div>
           ) : (
-            <ImageIcon size={20} className="text-gray-400" />
+            <div className="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+              <ImageIcon size={20} className="text-gray-400" />
+            </div>
           )}
         </Link>
       ),
@@ -132,7 +139,7 @@ export default function AdminProductsPage() {
             {product.categories.length > 0 ? (
               catText
             ) : (
-              <span className="text-[10px] font-bold text-pink-500 dark:text-pink-450">
+              <span className="text-[10px] font-bold text-pink-500 dark:text-pink-500">
                 Uncategorized
               </span>
             )}
@@ -162,11 +169,11 @@ export default function AdminProductsPage() {
       thClassName: "w-[13%]",
       render: (product) => (
         <div>
-          <div className="font-semibold text-sm text-gray-850 dark:text-gray-200">
+          <div className="font-semibold text-sm text-gray-800 dark:text-gray-200">
             {formatPrice(product)}
           </div>
           {product.productType === "VARIABLE" && (
-            <span className="inline-flex items-center gap-1 mt-1.5 text-[9px] bg-emerald-50 dark:bg-emerald-900/30 text-emerald-650 dark:text-emerald-450 font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">
+            <span className="inline-flex items-center gap-1 mt-1.5 text-[9px] bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">
               <LayoutGrid size={10} /> Variable
             </span>
           )}
@@ -197,7 +204,7 @@ export default function AdminProductsPage() {
               >
                 {totalStock > 0 ? `${totalStock} in stock` : "Out of stock"}
               </span>
-              <span className="text-[10px] text-gray-455 dark:text-gray-400 font-medium">
+              <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
                 ({product.variants?.length || 0} variants)
               </span>
             </div>
@@ -227,10 +234,10 @@ export default function AdminProductsPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => toggleFeatured(product.id, !product.featured)}
-            className={`p-2 rounded-xl transition-all duration-200 border hover:shadow-sm ${
+            className={`p-2 rounded-xl border transition-all duration-300 ${
               product.featured
-                ? "bg-amber-50 dark:bg-amber-955/20 border-amber-200 dark:border-amber-900/50 text-amber-555 dark:text-amber-450 scale-105"
-                : "bg-gray-50/50 dark:bg-gray-800 border-gray-150 dark:border-gray-700 text-gray-300 dark:text-gray-655 hover:text-amber-450 hover:bg-amber-50/30 dark:hover:bg-amber-955/10 hover:border-amber-100"
+                ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-900/50 text-amber-500 dark:text-amber-500 scale-105"
+                : "bg-gray-50/50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 hover:text-amber-500 hover:bg-amber-50/30 dark:hover:bg-amber-900/10 hover:border-amber-100"
             }`}
             title={
               product.featured
@@ -247,7 +254,7 @@ export default function AdminProductsPage() {
               title={getSaleDates(product)}
             >
               {Math.round(
-                ((product.price - product.specialPrice) / product.price) * 100,
+                product.price > 0 ? ((product.price - product.specialPrice) / product.price) * 100 : 0,
               )}
               % OFF
             </span>
@@ -301,7 +308,7 @@ export default function AdminProductsPage() {
         );
       },
     },
-  ];
+  ], [pendingDeletions, selectedProducts]);
 
   // Responsive mobile layout card builder
   const renderMobileCard = (
@@ -422,10 +429,10 @@ export default function AdminProductsPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => toggleFeatured(product.id, !product.featured)}
-              className={`p-1.5 rounded-lg border transition-colors ${
+              className={`p-1.5 rounded-lg border ${
                 product.featured
-                  ? "bg-amber-50 dark:bg-amber-955/20 border-amber-200 dark:border-amber-900/50 text-amber-550"
-                  : "bg-gray-50/50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-550"
+                  ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-900/50 text-amber-500"
+                  : "bg-gray-50/50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-500"
               }`}
             >
               <Star
@@ -460,7 +467,7 @@ export default function AdminProductsPage() {
                   className={`p-1.5 rounded-lg border transition-colors ${
                     isMultipleSelected
                       ? "bg-gray-50/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700 text-gray-300 dark:text-gray-600 cursor-not-allowed opacity-50"
-                      : "bg-gray-50/50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-550 dark:text-gray-450 hover:text-pink-650"
+                      : "bg-gray-50/50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-500 hover:text-pink-600"
                   }`}
                 >
                   <Trash2 size={14} />
@@ -651,9 +658,9 @@ export default function AdminProductsPage() {
     return `Sale: ${start} - ${end}`;
   };
 
-  const visibleProducts = products.filter(
-    (p) => !pendingDeletions.includes(p.id),
-  );
+  const visibleProducts = useMemo(() => {
+    return products.filter((p) => !pendingDeletions.includes(p.id));
+  }, [products, pendingDeletions]);
 
   return (
     <div className="max-w-7xl mx-auto pb-12 px-4 sm:px-6">

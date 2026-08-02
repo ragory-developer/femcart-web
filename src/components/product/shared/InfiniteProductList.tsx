@@ -101,32 +101,8 @@ export default function InfiniteProductList({
     fetchMore();
   }, [page, fetchUrl, initialPagination.page]);
 
-  // If infinite scroll is disabled, just show the initial products in a standard grid
-  if (!enabled) {
-    return (
-      <div
-        className={`-mx-2 sm:mx-0 grid grid-cols-2 md:grid-cols-2 ${gridCols} gap-2 sm:gap-4 lg:gap-[clamp(1rem,3vw,1.5rem)]`}
-      >
-        {initialProducts.length > 0 ? (
-          initialProducts.map((product: any, idx: number) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.05 }}
-            >
-              <ProductCard product={product} />
-            </motion.div>
-          ))
-        ) : (
-          <EmptyState />
-        )}
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-12">
+    <div className="space-y-12 pb-12">
       <div
         className={`-mx-2 sm:mx-0 grid grid-cols-2 md:grid-cols-2 ${gridCols} gap-2 sm:gap-4 lg:gap-[clamp(1rem,3vw,1.5rem)]`}
       >
@@ -168,6 +144,27 @@ export default function InfiniteProductList({
           </>
         )}
       </div>
+
+      {hasMore && !enabled && products.length > 0 && (
+        <div className="flex justify-center py-6">
+          <button
+            onClick={() => setPage((prevPage) => prevPage + 1)}
+            disabled={loading}
+            className="group relative overflow-hidden bg-pink-50 text-pink-600 dark:bg-pink-950/30 dark:text-pink-400 border-2 border-pink-100 dark:border-pink-900/50 hover:border-pink-200 dark:hover:border-pink-800 px-10 py-4 rounded-full font-black text-sm uppercase tracking-widest transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+          >
+            <span className="relative z-10 flex items-center gap-2">
+              {loading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-pink-600 dark:border-pink-400 border-t-transparent rounded-full animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                "Load More Products"
+              )}
+            </span>
+          </button>
+        </div>
+      )}
 
       {!hasMore && products.length > 0 && (
         <div className="py-[clamp(2rem,5vw,4rem)] text-center">

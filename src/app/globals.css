@@ -37,8 +37,8 @@
   --spacing-fluid-xl: clamp(2rem, 1.5rem + 3vw, 4.5rem);
 
   /* Font mapping */
-  --font-display: var(--font-outfit);
-  --font-body: var(--font-manrope);
+  --font-display: var(--font-outfit), var(--font-noto-bengali), sans-serif;
+  --font-body: var(--font-manrope), var(--font-noto-bengali), sans-serif;
   
   /* Premium shadows */
   --shadow-premium: 0 4px 20px rgba(0,0,0,0.04);

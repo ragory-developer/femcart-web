@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { API_URL } from "@/lib/config";
 import { AlertCircle, CheckCircle2, Loader2, RefreshCw } from "lucide-react";
+import StagingGrid from "./StagingGrid";
 
 interface ImportLog {
   id: string;
@@ -14,6 +15,34 @@ interface ImportLog {
   createdAt: string;
 }
 
+const WavingText = ({ text }: { text: string }) => {
+  return (
+    <span className="inline-flex space-x-[1px]">
+      {text.split("").map((char, index) => (
+        <span
+          key={index}
+          className="inline-block animate-wave"
+          style={{ 
+            animationDelay: `${index * 0.1}s`, 
+            animationDuration: '1.2s' 
+          }}
+        >
+          {char === " " ? "\u00A0" : char}
+        </span>
+      ))}
+      <style>{`
+        @keyframes wave {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-2px); }
+        }
+        .animate-wave {
+          animation: wave ease-in-out infinite;
+        }
+      `}</style>
+    </span>
+  );
+};
+
 export default function ImportLogs() {
   const [logs, setLogs] = useState<ImportLog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,9 +53,21 @@ export default function ImportLogs() {
     fetchLogs();
   }, []);
 
-  const fetchLogs = async () => {
+  // Auto-polling for active tasks
+  useEffect(() => {
+    const hasActiveTasks = logs.some(l => l.status === 'processing' || l.status === 'committing');
+    if (!hasActiveTasks) return;
+
+    const interval = setInterval(() => {
+      fetchLogs(true);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [logs]);
+
+  const fetchLogs = async (silent = false) => {
     try {
-      setRefreshing(true);
+      if (!silent) setRefreshing(true);
       const token =
         localStorage.getItem("femcart_access_token") ||
         localStorage.getItem("token") ||
@@ -47,13 +88,27 @@ export default function ImportLogs() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
+  const getStatusBadge = (log: any) => {
+    const progress = log.totalProducts > 0 
+      ? Math.min(100, Math.round(((log.imported + log.failed) / log.totalProducts) * 100)) 
+      : 0;
+
+    switch (log.status) {
       case "processing":
+      case "committing":
         return (
-          <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
-            <Loader2 size={10} className="animate-spin" /> Processing
-          </span>
+          <div className="flex flex-col items-center gap-1.5 w-full min-w-[120px] max-w-[140px] mx-auto">
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 whitespace-nowrap">
+              <WavingText text={log.status === 'committing' ? 'Publishing' : 'Parsing CSV'} /> 
+              <span>{progress}%</span>
+            </span>
+            <div className="w-full bg-blue-100 dark:bg-blue-900/30 rounded-full h-1.5 overflow-hidden">
+              <div 
+                className="bg-blue-500 h-1.5 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
         );
       case "completed":
         return (
@@ -97,7 +152,7 @@ export default function ImportLogs() {
           </p>
         </div>
         <button
-          onClick={fetchLogs}
+          onClick={() => fetchLogs()}
           disabled={refreshing}
           className="p-2 rounded-xl border border-gray-250/50 dark:border-gray-800 hover:bg-gray-150/40 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 disabled:opacity-50 transition-colors"
         >
@@ -141,8 +196,8 @@ export default function ImportLogs() {
                           {log.id.slice(-6).toUpperCase()}
                         </td>
                         <td className="px-4 py-3 text-gray-500">{dateStr}</td>
-                        <td className="px-4 py-3 text-center">
-                          {getStatusBadge(log.status)}
+                        <td className="px-4 py-3 text-center align-middle">
+                          {getStatusBadge(log)}
                         </td>
                         <td className="px-4 py-3 text-right font-medium text-gray-700 dark:text-gray-300">
                           {log.totalProducts}
@@ -153,33 +208,38 @@ export default function ImportLogs() {
                         <td className="px-4 py-3 text-right font-bold text-rose-600 dark:text-rose-400">
                           {log.failed}
                         </td>
-                        <td className="px-4 py-3 text-center">
-                          {log.errors ? (
+                          <td className="px-4 py-3 text-center">
                             <button
                               onClick={() =>
                                 setExpandedLogId(isExpanded ? null : log.id)
                               }
                               className="text-xs font-bold text-blue-500 hover:text-blue-600 underline"
                             >
-                              {isExpanded ? "Hide Details" : "View Errors"}
+                              {isExpanded ? "Hide Review" : "Review Staging"}
                             </button>
-                          ) : (
-                            <span className="text-gray-400 font-medium">-</span>
-                          )}
-                        </td>
+                          </td>
                       </tr>
 
-                      {isExpanded && log.errors && (
+                      {isExpanded && (
                         <tr>
-                          <td colSpan={7} className="px-4 py-3 bg-rose-50/30 dark:bg-rose-950/10 border-b border-gray-200 dark:border-gray-800">
-                            <div className="p-3 bg-rose-50/80 dark:bg-rose-950/20 border border-rose-100/50 dark:border-rose-900/30 rounded-xl">
-                              <h4 className="text-xs font-bold text-rose-800 dark:text-rose-400 mb-1.5 flex items-center gap-1">
-                                <AlertCircle size={12} /> Execution Errors List:
-                              </h4>
-                              <pre className="text-[10px] font-mono text-rose-700 dark:text-rose-400 overflow-x-auto whitespace-pre-wrap leading-relaxed max-h-[180px]">
-                                {log.errors}
-                              </pre>
+                          <td colSpan={7} className="px-4 py-3 bg-gray-50/30 dark:bg-gray-900/10 border-b border-gray-200 dark:border-gray-800">
+                            <div className="w-full">
+                              <StagingGrid 
+                                logId={log.id} 
+                                onCommitSuccess={fetchLogs}
+                              />
                             </div>
+                            
+                            {log.errors && (
+                              <div className="p-3 mt-4 bg-rose-50/80 dark:bg-rose-950/20 border border-rose-100/50 dark:border-rose-900/30 rounded-xl">
+                                <h4 className="text-xs font-bold text-rose-800 dark:text-rose-400 mb-1.5 flex items-center gap-1">
+                                  <AlertCircle size={12} /> Execution Errors List:
+                                </h4>
+                                <pre className="text-[10px] font-mono text-rose-700 dark:text-rose-400 overflow-x-auto whitespace-pre-wrap leading-relaxed max-h-[180px]">
+                                  {log.errors}
+                                </pre>
+                              </div>
+                            )}
                           </td>
                         </tr>
                       )}

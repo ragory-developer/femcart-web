@@ -9,12 +9,14 @@ export default function StoreInitializer({
   bottomNavbarItems,
   footerSections,
   categories,
+  brands,
 }: {
   navbarItems?: any[];
   topNavbarItems?: any[];
   bottomNavbarItems?: any[];
   footerSections?: any[];
   categories?: any[];
+  brands?: any[];
 }) {
   const initialized = useRef(false);
 
@@ -31,6 +33,9 @@ export default function StoreInitializer({
     }
     if (categories) {
       useNavigationStore.setState({ categories });
+    }
+    if (brands) {
+      useNavigationStore.setState({ brands });
     }
     initialized.current = true;
   }

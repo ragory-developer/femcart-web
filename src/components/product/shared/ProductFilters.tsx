@@ -29,7 +29,7 @@ export default function ProductFilters({
   } = useProductFilters();
 
   const scrollableClass =
-    "max-h-60 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&::-webkit-scrollbar-thumb]:bg-gray-800 [&::-webkit-scrollbar-thumb]:rounded-full";
+    "pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 dark:[&::-webkit-scrollbar-thumb]:bg-gray-800 [&::-webkit-scrollbar-thumb]:rounded-full";
 
   const sectionWindowClass = "mb-8";
 
@@ -211,7 +211,7 @@ export default function ProductFilters({
   }) => (
     <button
       onClick={() => toggleSection(section)}
-      className="w-full flex items-center justify-between text-xs font-black uppercase tracking-widest text-gray-900 dark:text-white hover:text-emerald-500 transition-colors group text-left outline-none"
+      className="w-full flex items-center justify-between text-xs font-black uppercase tracking-widest text-gray-900 dark:text-white hover:text-pink-500 transition-colors group text-left outline-none"
     >
       <span className="group-hover:translate-x-0.5 transition-transform duration-200">
         {title}
@@ -220,7 +220,7 @@ export default function ProductFilters({
         size={14}
         className={`transform transition-transform duration-300 ${
           isExpanded
-            ? "rotate-180 text-emerald-500"
+            ? "rotate-180 text-pink-500"
             : "text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300"
         }`}
       />
@@ -238,17 +238,17 @@ export default function ProductFilters({
               placeholder="Search products..."
               value={localSearch}
               onChange={(e) => setLocalSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm font-medium text-gray-900 dark:text-white outline-none focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/10 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-300 placeholder:text-gray-400"
+              className="w-full pl-11 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm font-medium text-gray-900 dark:text-white outline-none focus:border-pink-500 dark:focus:border-pink-400 focus:ring-4 focus:ring-pink-500/10 hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-300 placeholder:text-gray-400"
             />
             <Search
               size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-emerald-500 transition-colors"
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-pink-500 transition-colors"
             />
           </div>
           {onClose && (
             <button
               onClick={onClose}
-              className="lg:hidden shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-emerald-100 hover:text-emerald-600 transition-colors"
+              className="lg:hidden shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-pink-100 hover:text-pink-600 transition-colors"
             >
               <ChevronDown size={18} className="rotate-90" />
             </button>
@@ -286,8 +286,8 @@ export default function ProductFilters({
                           <div
                             className={`w-[18px] h-[18px] rounded-md border flex items-center justify-center shrink-0 transition-all duration-200 ${
                               selected
-                                ? "border-emerald-500 bg-emerald-500 text-white shadow-sm shadow-emerald-500/10"
-                                : "border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 group-hover:border-emerald-500"
+                                ? "border-pink-500 bg-pink-500 text-white shadow-sm shadow-pink-500/10"
+                                : "border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 group-hover:border-pink-500"
                             }`}
                           >
                             {selected && (
@@ -297,7 +297,7 @@ export default function ProductFilters({
                           <span
                             className={`text-[13px] font-medium transition-colors duration-200 ${
                               selected
-                                ? "text-emerald-600 dark:text-emerald-400 font-bold"
+                                ? "text-pink-600 dark:text-pink-400 font-bold"
                                 : "text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                             }`}
                           >
@@ -307,8 +307,8 @@ export default function ProductFilters({
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors duration-200 ${
                             selected
-                              ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
-                              : "bg-gray-50 text-gray-400 dark:bg-gray-900/60 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-950/20 group-hover:text-emerald-600 dark:group-hover:text-emerald-400"
+                              ? "bg-pink-50 text-pink-600 dark:bg-pink-950/40 dark:text-pink-400"
+                              : "bg-gray-50 text-gray-400 dark:bg-gray-900/60 group-hover:bg-pink-50 dark:group-hover:bg-pink-950/20 group-hover:text-pink-600 dark:group-hover:text-pink-400"
                           }`}
                         >
                           {cat.count}
@@ -353,8 +353,8 @@ export default function ProductFilters({
                           <div
                             className={`w-[18px] h-[18px] rounded-md border flex items-center justify-center shrink-0 transition-all duration-200 ${
                               selected
-                                ? "border-emerald-500 bg-emerald-500 text-white shadow-sm shadow-emerald-500/10"
-                                : "border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 group-hover:border-emerald-500"
+                                ? "border-pink-500 bg-pink-500 text-white shadow-sm shadow-pink-500/10"
+                                : "border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 group-hover:border-pink-500"
                             }`}
                           >
                             {selected && (
@@ -364,7 +364,7 @@ export default function ProductFilters({
                           <span
                             className={`text-[13px] font-medium transition-colors duration-200 ${
                               selected
-                                ? "text-emerald-600 dark:text-emerald-400 font-bold"
+                                ? "text-pink-600 dark:text-pink-400 font-bold"
                                 : "text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                             }`}
                           >
@@ -374,8 +374,8 @@ export default function ProductFilters({
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors duration-200 ${
                             selected
-                              ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
-                              : "bg-gray-50 text-gray-400 dark:bg-gray-900/60 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-950/20 group-hover:text-emerald-600 dark:group-hover:text-emerald-400"
+                              ? "bg-pink-50 text-pink-600 dark:bg-pink-950/40 dark:text-pink-400"
+                              : "bg-gray-50 text-gray-400 dark:bg-gray-900/60 group-hover:bg-pink-50 dark:group-hover:bg-pink-950/20 group-hover:text-pink-600 dark:group-hover:text-pink-400"
                           }`}
                         >
                           {brand.count}
@@ -412,10 +412,17 @@ export default function ProductFilters({
                   className="overflow-hidden"
                 >
                   <div
-                    className={`pt-4 pb-1 ${_isColor ? "flex flex-wrap gap-3" : _isSize ? "flex flex-wrap gap-2.5" : `space-y-3.5 ${scrollableClass}`}`}
+                    className={`pt-4 pb-1 ${_isColor ? `flex flex-wrap gap-3 ${scrollableClass}` : _isSize ? `flex flex-wrap gap-2.5 ${scrollableClass}` : `space-y-3.5 ${scrollableClass}`}`}
                   >
-                    {spec.values.map((v: any) => {
-                      const selected = (
+                    {[...spec.values]
+                      .sort((a, b) =>
+                        a.value.localeCompare(b.value, undefined, {
+                          numeric: true,
+                          sensitivity: "base",
+                        }),
+                      )
+                      .map((v: any) => {
+                        const selected = (
                         filters.attributes[spec.name] || []
                       ).includes(v.value);
 
@@ -424,32 +431,14 @@ export default function ProductFilters({
                           <button
                             key={v.value}
                             onClick={() => toggleAttribute(spec.name, v.value)}
-                            className={`w-7 h-7 rounded-full border-2 transition-all duration-300 flex items-center justify-center relative hover:scale-110 ${
+                            className={`px-3 py-1.5 min-w-[2.5rem] rounded-xl text-xs font-bold border transition-all duration-300 hover:scale-[1.02] ${
                               selected
-                                ? "border-emerald-500 scale-105 shadow-md shadow-emerald-500/20"
-                                : "border-white dark:border-gray-900 ring-1 ring-gray-200 dark:ring-gray-800 hover:ring-emerald-500"
+                                ? "border-pink-500 bg-pink-50 text-pink-700 dark:bg-pink-950/40 dark:text-pink-400 shadow-sm shadow-pink-500/10"
+                                : "border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-pink-500 dark:hover:border-pink-500 hover:text-pink-600 dark:hover:text-pink-400 bg-white dark:bg-gray-900"
                             }`}
-                            style={{ backgroundColor: v.value.toLowerCase() }}
                             title={`${v.value} (${v.count})`}
                           >
-                            {selected && (
-                              <Check
-                                size={12}
-                                className={
-                                  [
-                                    "white",
-                                    "light",
-                                    "transparent",
-                                    "yellow",
-                                    "beige",
-                                  ].some((c) =>
-                                    v.value.toLowerCase().includes(c),
-                                  )
-                                    ? "text-gray-900"
-                                    : "text-white"
-                                }
-                              />
-                            )}
+                            {v.value}
                           </button>
                         );
                       }
@@ -461,8 +450,8 @@ export default function ProductFilters({
                             onClick={() => toggleAttribute(spec.name, v.value)}
                             className={`px-3 py-1.5 min-w-[2.5rem] rounded-xl text-xs font-bold border transition-all duration-300 hover:scale-[1.02] ${
                               selected
-                                ? "border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 shadow-sm shadow-emerald-500/10"
-                                : "border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-emerald-500 dark:hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 bg-white dark:bg-gray-900"
+                                ? "border-pink-500 bg-pink-50 text-pink-700 dark:bg-pink-950/40 dark:text-pink-400 shadow-sm shadow-pink-500/10"
+                                : "border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-pink-500 dark:hover:border-pink-500 hover:text-pink-600 dark:hover:text-pink-400 bg-white dark:bg-gray-900"
                             }`}
                           >
                             {v.value}
@@ -479,8 +468,8 @@ export default function ProductFilters({
                             <div
                               className={`w-[18px] h-[18px] rounded-md border flex items-center justify-center shrink-0 transition-all duration-200 ${
                                 selected
-                                  ? "border-emerald-500 bg-emerald-500 text-white shadow-sm shadow-emerald-500/10"
-                                  : "border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 group-hover:border-emerald-500"
+                                  ? "border-pink-500 bg-pink-500 text-white shadow-sm shadow-pink-500/10"
+                                  : "border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 group-hover:border-pink-500"
                               }`}
                             >
                               {selected && (
@@ -490,7 +479,7 @@ export default function ProductFilters({
                             <span
                               className={`text-[13px] font-medium transition-colors duration-200 ${
                                 selected
-                                  ? "text-emerald-600 dark:text-emerald-400 font-bold"
+                                  ? "text-pink-600 dark:text-pink-400 font-bold"
                                   : "text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                               }`}
                             >
@@ -500,8 +489,8 @@ export default function ProductFilters({
                           <span
                             className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors duration-200 ${
                               selected
-                                ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
-                                : "bg-gray-50 text-gray-400 dark:bg-gray-900/60 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-950/20 group-hover:text-emerald-600 dark:group-hover:text-emerald-400"
+                                ? "bg-pink-50 text-pink-600 dark:bg-pink-950/40 dark:text-pink-400"
+                                : "bg-gray-50 text-gray-400 dark:bg-gray-900/60 group-hover:bg-pink-50 dark:group-hover:bg-pink-950/20 group-hover:text-pink-600 dark:group-hover:text-pink-400"
                             }`}
                           >
                             {v.count}
@@ -550,16 +539,16 @@ export default function ProductFilters({
                       setLocalMinPrice(val[0].toString());
                       setLocalMaxPrice(val[1].toString());
                     }}
-                    trackStyle={[{ backgroundColor: "#10b981" }]}
+                    trackStyle={[{ backgroundColor: "#ec4899" }]}
                     handleStyle={[
                       {
-                        borderColor: "#10b981",
+                        borderColor: "#ec4899",
                         backgroundColor: "#fff",
                         opacity: 1,
                         boxShadow: "0 0 0 4px rgba(16,185,129,0.1)",
                       },
                       {
-                        borderColor: "#10b981",
+                        borderColor: "#ec4899",
                         backgroundColor: "#fff",
                         opacity: 1,
                         boxShadow: "0 0 0 4px rgba(16,185,129,0.1)",
@@ -581,7 +570,7 @@ export default function ProductFilters({
                       value={localMinPrice}
                       onChange={handleMinPriceChange}
                       onBlur={handlePriceBlur}
-                      className="w-full pl-6 pr-2 py-2.5 bg-gray-50 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-800 rounded-xl text-xs text-center font-bold text-gray-800 dark:text-gray-200 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/10 outline-none transition-all"
+                      className="w-full pl-6 pr-2 py-2.5 bg-transparent border-b-2 border-gray-200 dark:border-gray-800 rounded-none text-xs text-center font-bold text-gray-800 dark:text-gray-200 focus:border-pink-500 dark:focus:border-pink-400 focus:ring-2 focus:ring-pink-500/10 outline-none transition-all"
                     />
                   </div>
                   <span className="text-gray-300 dark:text-gray-700 font-bold">
@@ -598,7 +587,7 @@ export default function ProductFilters({
                       value={localMaxPrice}
                       onChange={handleMaxPriceChange}
                       onBlur={handlePriceBlur}
-                      className="w-full pl-6 pr-2 py-2.5 bg-gray-50 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-800 rounded-xl text-xs text-center font-bold text-gray-800 dark:text-gray-200 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/10 outline-none transition-all"
+                      className="w-full pl-6 pr-2 py-2.5 bg-transparent border-b-2 border-gray-200 dark:border-gray-800 rounded-none text-xs text-center font-bold text-gray-800 dark:text-gray-200 focus:border-pink-500 dark:focus:border-pink-400 focus:ring-2 focus:ring-pink-500/10 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -640,8 +629,8 @@ export default function ProductFilters({
                         <div
                           className={`w-[18px] h-[18px] rounded-full flex items-center justify-center shrink-0 transition-all duration-200 border ${
                             selected
-                              ? "border-emerald-500 p-1 bg-emerald-500 text-white shadow-sm shadow-emerald-500/10"
-                              : "border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 group-hover:border-emerald-500"
+                              ? "border-pink-500 p-1 bg-pink-500 text-white shadow-sm shadow-pink-500/10"
+                              : "border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 group-hover:border-pink-500"
                           }`}
                         >
                           {selected && (
@@ -663,7 +652,7 @@ export default function ProductFilters({
                           <span
                             className={`ml-2 text-[13px] font-medium transition-colors duration-200 ${
                               selected
-                                ? "text-emerald-600 dark:text-emerald-400 font-bold"
+                                ? "text-pink-600 dark:text-pink-400 font-bold"
                                 : "text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                             }`}
                           >

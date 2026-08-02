@@ -171,12 +171,7 @@ export const navCategories = [
         icon: LayoutDashboard,
         permission: "PAGES",
       },
-      {
-        label: "Banners",
-        href: "/admin/banners",
-        icon: Presentation,
-        permission: "SETTINGS",
-      },
+
       {
         label: "Navigation",
         href: "/admin/navigation",

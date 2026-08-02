@@ -1,6 +1,34 @@
 "use client";
 import { API_URL } from "@/lib/config";
 import { toast } from "sonner";
+import Swal from "sweetalert2";
+
+const WavingText = ({ text }: { text: string }) => (
+  <span className="inline-flex space-x-[1px]">
+    {text.split("").map((char, index) => (
+      <span
+        key={index}
+        className="inline-block animate-wave"
+        style={{ 
+          animationDelay: `${index * 0.1}s`, 
+          animationDuration: '1.2s' 
+        }}
+      >
+        {char === " " ? "\u00A0" : char}
+      </span>
+    ))}
+    <style>{`
+      @keyframes wave {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-2px); }
+      }
+      .animate-wave {
+        animation: wave ease-in-out infinite;
+      }
+    `}</style>
+  </span>
+);
+
 import {
   AlertTriangle,
   CheckCircle2,
@@ -168,8 +196,17 @@ export default function ImportProcessTab() {
   };
 
   const clearTasks = async () => {
-    if (!confirm("Delete all tasks? Running tasks will not be stopped."))
-      return;
+    const result = await Swal.fire({
+      title: "Delete all tasks?",
+      text: "Running tasks will not be stopped.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      confirmButtonText: "Yes, delete them"
+    });
+    
+    if (!result.isConfirmed) return;
+
     try {
       await fetch(`${API_URL}/api/wordpress/tasks`, {
         method: "DELETE",
@@ -361,18 +398,14 @@ export default function ImportProcessTab() {
                 }`}
               >
                 <div className="flex items-center gap-4 p-5">
-                  <div className={`p-3 rounded-xl ${cfg.bg} ${cfg.color}`}>
-                    <StatusIcon
-                      size={20}
-                      className={
-                        task.status === "running"
-                          ? "animate-spin"
-                          : task.status === "queued"
-                            ? "animate-pulse"
-                            : ""
-                      }
-                    />
-                  </div>
+                  {task.status !== "running" && (
+                    <div className={`p-3 rounded-xl ${cfg.bg} ${cfg.color}`}>
+                      <StatusIcon
+                        size={20}
+                        className={task.status === "queued" ? "animate-pulse" : ""}
+                      />
+                    </div>
+                  )}
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
@@ -380,9 +413,9 @@ export default function ImportProcessTab() {
                         {task.name}
                       </span>
                       <span
-                        className={`text-[10px] px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider ${cfg.bg} ${cfg.color} ${cfg.border} border`}
+                        className={`text-[10px] px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider ${cfg.bg} ${cfg.color} ${cfg.border} border whitespace-nowrap`}
                       >
-                        {cfg.label}
+                        {task.status === "running" ? <WavingText text={cfg.label.toUpperCase()} /> : cfg.label}
                       </span>
                     </div>
                     

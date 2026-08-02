@@ -53,22 +53,24 @@ export default function CartPage() {
   const total = subtotal + shipping;
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-950 min-h-[100dvh] py-12">
+    <div className="bg-gray-50 dark:bg-gray-950 min-h-[100dvh] py-4 lg:py-8">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-8">
-          <div>
+        <div className="relative flex items-center justify-center mb-4 lg:mb-6">
+          <div className="absolute left-0">
             <Link
               href="/products"
-              className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-primary transition-colors mb-2"
+              className="inline-flex items-center text-[11px] font-black text-gray-700 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 px-3 sm:px-4 py-2 rounded-full transition-colors uppercase tracking-[0.2em]"
             >
-              <ArrowLeft size={16} className="mr-1" /> Continue Shopping
+              <ArrowLeft size={14} className="sm:mr-2" /> <span className="hidden sm:inline">Continue Shopping</span>
             </Link>
-            <h1 className="text-3xl lg:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100">
+          </div>
+          <div className="flex items-center gap-3 px-10 sm:px-32">
+            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-gray-900 dark:text-gray-100">
               Shopping Cart
             </h1>
-          </div>
-          <div className="text-gray-800 dark:text-gray-200 font-semibold bg-white dark:bg-gray-800 px-4 py-2 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
-            {items.length} {items.length === 1 ? "Item" : "Items"}
+            <div className="text-gray-800 dark:text-gray-200 text-sm font-semibold bg-white dark:bg-gray-800 px-3 py-1 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 hidden sm:block">
+              {items.length} {items.length === 1 ? "Item" : "Items"}
+            </div>
           </div>
         </div>
 

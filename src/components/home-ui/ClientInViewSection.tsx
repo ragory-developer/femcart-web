@@ -18,7 +18,7 @@ export default function ClientInViewSection({
   });
 
   return (
-    <div ref={ref} style={bypass ? undefined : { minHeight }}>
+    <div ref={ref} style={bypass || inView ? undefined : { minHeight }}>
       {bypass || inView ? children : null}
     </div>
   );

@@ -19,6 +19,7 @@ export default function MobileSidebar({
   storeName = "Femcart",
 }: MobileSidebarProps) {
   const categories = useNavigationStore((state) => state.categories);
+  const brands = useNavigationStore((state) => state.brands);
 
   const [expandedCategory, setExpandedCategory] = React.useState<string | null>(
     null,
@@ -187,6 +188,36 @@ export default function MobileSidebar({
                   })}
                 </div>
               </div>
+
+              {/* Brands */}
+              {brands && brands.length > 0 && (
+                <div className="p-4 border-t border-gray-100">
+                  <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3 px-3">
+                    Brands
+                  </h3>
+                  <div className="flex flex-col gap-1">
+                    {brands.map((brand) => (
+                      <Link
+                        key={brand.id}
+                        href={`/products?brand=${brand.slug || brand.id}`}
+                        onClick={onClose}
+                        className="flex items-center gap-3 p-3 text-sm font-bold text-gray-700 hover:text-pink-600 hover:bg-pink-50 rounded-xl transition-colors"
+                      >
+                        {brand.image ? (
+                          <img
+                            src={brand.image}
+                            alt={brand.title}
+                            className="w-5 h-5 object-cover rounded shadow-sm"
+                          />
+                        ) : (
+                          <div className="w-5 h-5 bg-gray-100 rounded" />
+                        )}
+                        <span>{brand.title}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Footer Links */}
               <div className="p-6 border-t border-gray-100 bg-gray-50 flex items-center justify-center gap-6 mt-auto">

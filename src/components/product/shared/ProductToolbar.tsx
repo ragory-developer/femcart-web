@@ -104,12 +104,15 @@ export default function ProductToolbar({
         )}
       </AnimatePresence>
 
-      {/* Floating Action Button for Mobile */}
+      {/* Mobile Filter Pull Tab */}
       <button
-        className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[90] flex items-center gap-2 bg-emerald-600 text-white px-6 py-3.5 rounded-full shadow-lg shadow-emerald-500/30 text-sm font-bold uppercase tracking-wider"
+        className="lg:hidden fixed bottom-[56px] md:bottom-0 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center justify-center gap-1 bg-pink-600 text-white px-8 pt-1.5 pb-2 rounded-t-xl shadow-[0_-8px_15px_-3px_rgba(219,39,119,0.3)] transition-transform hover:-translate-y-1"
         onClick={() => setIsMobileFilterOpen(true)}
       >
-        <Filter size={18} /> Filters
+        <div className="w-8 h-1 bg-white/50 rounded-full" />
+        <span className="text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
+          <Filter size={12} /> Filters
+        </span>
       </button>
     </>
   );
