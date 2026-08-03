@@ -25,11 +25,11 @@ const sectionHeights: Record<string, string> = {
 export default function HomeView({
   categories,
   globalSettings,
-  products = [],
+  sectionProducts = {},
 }: {
   categories: any;
   globalSettings: any;
-  products?: any[];
+  sectionProducts?: Record<string, any[]>;
 }) {
   let layout: any = [];
   try {
@@ -80,30 +80,16 @@ export default function HomeView({
         const Component = ComponentRegistry[section.type];
         if (!Component) return null;
 
-        let sectionProducts = products;
-        if (section.props?.productSource === "FEATURED") {
-          sectionProducts = products.filter((p: any) => p.featured);
-        } else if (section.props?.productSource === "PROMOTION") {
-          sectionProducts = products.filter(
-            (p: any) => p.specialPrice && p.specialPrice < p.price,
-          );
-        } else if (section.props?.productSource === "BEST_SELLERS") {
-          sectionProducts = [...products].sort(
-            (a: any, b: any) => (b.averageRating || 0) - (a.averageRating || 0),
-          );
-        } else if (section.props?.productSource === "WEEKLY_SALE") {
-          sectionProducts = products
-            .filter((p: any) => p.specialPrice && p.specialPrice < p.price)
-            .slice(0, section.props.limit || 10);
-        } else if (section.props?.productSource === "NEW_ARRIVALS") {
-          sectionProducts = [...products].sort(
-            (a: any, b: any) =>
-              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-          );
+        let products = [];
+        if (section.props?.productSource) {
+          products = sectionProducts[section.props.productSource] || [];
+        } else if (section.type === "LimitedOffers") {
+          products = sectionProducts["PROMOTION"] || [];
         }
 
-        if (section.props?.limit) {
-          sectionProducts = sectionProducts.slice(0, section.props.limit);
+        // Apply slice if section has a limit (though backend already limits to 10)
+        if (section.props?.limit && products.length > section.props.limit) {
+          products = products.slice(0, section.props.limit);
         }
 
         return (
@@ -115,7 +101,7 @@ export default function HomeView({
             <Component
               {...section.props}
               categories={categories}
-              products={sectionProducts}
+              products={products}
             />
           </ClientInViewSection>
         );

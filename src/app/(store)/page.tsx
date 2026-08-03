@@ -30,10 +30,10 @@ async function fetchCategories() {
   }
 }
 
-async function fetchProducts() {
+async function fetchProducts(query: string = '?limit=50&status=ACTIVE') {
   try {
     const res = await fetchWithTimeout(
-      `${API_URL}/api/products?limit=50&status=ACTIVE`,
+      `${API_URL}/api/products${query}`,
       { next: { revalidate: 60 } },
     );
     if (!res.ok) return [];
@@ -45,17 +45,27 @@ async function fetchProducts() {
 }
 
 export default async function Home() {
-  const [categories, globalSettings, products] = await Promise.all([
+  const [categories, globalSettings, newArrivals, bestSellers, featured, promotions] = await Promise.all([
     fetchCategories(),
     getGlobalSettings(),
-    fetchProducts(),
+    fetchProducts('?sort=newest&limit=10&status=ACTIVE&card_only=true'),
+    fetchProducts('?sort=best_selling&limit=10&status=ACTIVE&card_only=true'),
+    fetchProducts('?featured=true&limit=10&status=ACTIVE&card_only=true'),
+    fetchProducts('?hasPromotion=true&limit=10&status=ACTIVE&card_only=true'),
   ]);
+
+  const sectionProducts = {
+    NEW_ARRIVALS: newArrivals,
+    BEST_SELLERS: bestSellers,
+    FEATURED: featured,
+    PROMOTION: promotions,
+  };
 
   return (
     <HomeView
       categories={categories}
       globalSettings={globalSettings}
-      products={products}
+      sectionProducts={sectionProducts}
     />
   );
 }
