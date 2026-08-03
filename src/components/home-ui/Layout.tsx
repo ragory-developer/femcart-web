@@ -58,10 +58,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFDFB]">
-      {/* Top Bar */}
-      {settings?.top_bar_text && settings.top_bar_text.trim() !== "" && (
+      {/* Top Bar Notification */}
+      {(!settings?.top_bar_text || !settings.top_bar_text.includes("QA Test")) && (
         <div className="bg-[#E32857] text-white h-9 flex items-center justify-center text-[13px] font-medium tracking-wide">
-          {settings.top_bar_text}
+          {settings?.top_bar_text && settings.top_bar_text.trim() !== "" 
+            ? settings.top_bar_text 
+            : "Welcome to Femcart - Premium Women's Intimate Apparel"}
         </div>
       )}
 

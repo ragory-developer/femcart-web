@@ -275,24 +275,24 @@ export default function Footer({
 
           {/* Contact */}
           <div className="col-span-2 md:col-span-1 lg:col-span-1">
-            <h4 className="text-gray-900 font-black text-[16px] mb-6 font-display tracking-tight">
+            <h4 className="text-gray-900 font-black text-[16px] mb-6 font-display tracking-tight text-center md:text-left">
               Contact Us
             </h4>
             <ul className="space-y-4 text-[14px] md:text-[15px] font-medium text-gray-600 flex flex-col items-center md:items-start">
-              <li className="flex gap-3 text-left items-start md:items-center">
+              <li className="flex flex-col md:flex-row gap-2 md:gap-3 items-center md:items-start text-center md:text-left">
                 <MapPin
                   size={20}
-                  className="text-pink-600 shrink-0 mt-0.5 md:mt-0"
+                  className="text-pink-600 shrink-0"
                 />
-                <span>{contactAddress}</span>
+                <span>{settings.footer_address || contactAddress}</span>
               </li>
-              <li className="flex gap-3 items-center">
+              <li className="flex flex-col md:flex-row gap-2 md:gap-3 items-center md:items-start text-center md:text-left">
                 <Phone size={20} className="text-pink-600 shrink-0" />
-                <span>{contactPhone}</span>
+                <span>{settings.footer_phone || contactPhone}</span>
               </li>
-              <li className="flex gap-3 items-center">
+              <li className="flex flex-col md:flex-row gap-2 md:gap-3 items-center md:items-start text-center md:text-left">
                 <Mail size={20} className="text-pink-600 shrink-0" />
-                <span>{contactEmail}</span>
+                <span>{settings.footer_email || contactEmail}</span>
               </li>
             </ul>
           </div>
