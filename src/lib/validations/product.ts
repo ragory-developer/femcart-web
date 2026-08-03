@@ -64,7 +64,7 @@ export const productSchema = z.object({
   slug: z.string().optional(),
   sku: z.string().optional(),
   countryOfOrigin: z.string().optional(),
-  isHalal: z.boolean().default(true),
+  isFemcart: z.boolean().default(true),
   upsellProducts: z.array(z.string()).default([]),
   upsellCategoryIds: z.array(z.string()).default([]),
   downsellProducts: z.array(z.string()).default([]),

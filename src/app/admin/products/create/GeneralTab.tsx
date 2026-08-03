@@ -417,10 +417,10 @@ export default function GeneralTab({ excludeId }: { excludeId?: string }) {
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-              Halal Status
+              100% Original
             </label>
             <Controller
-              name="isHalal"
+              name="isFemcart"
               control={control}
               render={({ field }) => (
                 <select
@@ -428,8 +428,8 @@ export default function GeneralTab({ excludeId }: { excludeId?: string }) {
                   onChange={(e) => field.onChange(e.target.value === "true")}
                   className="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-sm focus:bg-white dark:focus:bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 dark:text-white transition-colors"
                 >
-                  <option value="true">100% Halal</option>
-                  <option value="false">Standard</option>
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
                 </select>
               )}
             />

@@ -213,8 +213,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Footer */}
       <footer className="bg-white pt-10 md:pt-16 pb-8 border-t border-orange-200 mt-8 md:mt-20">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-6 grid grid-cols-2 md:flex md:flex-row gap-y-10 gap-x-4 md:gap-12 justify-between">
-          <div className="col-span-2 md:col-auto md:w-1/3">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-6 flex flex-col md:flex-row gap-y-10 gap-x-4 md:gap-12 justify-between text-center md:text-left">
+          <div className="w-full md:w-1/3 flex flex-col items-center md:items-start">
             <Link
               href="/"
               className="font-serif font-semibold text-pink-500 text-[32px] inline-block mb-4"
@@ -233,57 +233,62 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 settings?.store_name || "Femecart"
               )}
             </Link>
-            <p className="text-text-amber-700 text-[14px] mb-4">
+            <p className="text-text-amber-700 text-[14px] mb-4 max-w-sm md:max-w-none">
               {settings?.footer_about_text ||
                 "Providing comfortable bras and panties to women across Bangladesh."}
             </p>
-            <p className="text-text-pink-500 text-[14px] font-medium flex items-center gap-2">
+            <p className="text-text-pink-500 text-[14px] font-medium flex items-center justify-center md:justify-start gap-2">
               <Phone size={16} className="text-pink-500" strokeWidth={2} />{" "}
               {settings?.footer_phone || "+880 1812 345678"}
             </p>
-            <p className="text-text-pink-500 text-[14px] font-medium flex items-center gap-2 mt-2">
+            <p className="text-text-pink-500 text-[14px] font-medium flex items-center justify-center md:justify-start gap-2 mt-2">
               <Mail size={16} className="text-pink-500" strokeWidth={2} />{" "}
               {settings?.footer_email || "support@femecart.com"}
             </p>
           </div>
 
-          {footerSections?.map((section: any) => (
-            <div key={section.id} className="col-span-1 md:col-auto md:w-1/4">
-              <h4 className="font-serif text-[16px] md:text-[18px] mb-3 md:mb-4">
-                {section.title}
-              </h4>
-              <ul className="flex flex-col gap-2 md:gap-3 text-text-amber-700 text-[13px] md:text-[14px]">
-                {section.links?.map((link: any) => (
-                  <li key={link.id}>
-                    <Link
-                      href={link.url || "#"}
-                      className="hover:text-pink-500 transition-colors"
-                    >
-                      {link.title}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div className="w-full md:w-2/3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-10 gap-x-4">
+            {footerSections?.map((section: any) => (
+              <div key={section.id} className="flex flex-col items-center md:items-start">
+                <h4 className="font-serif text-[16px] md:text-[18px] mb-3 md:mb-4">
+                  {section.title}
+                </h4>
+                <ul className="flex flex-col gap-2 md:gap-3 text-text-amber-700 text-[13px] md:text-[14px] items-center md:items-start">
+                  {section.links?.map((link: any) => (
+                    <li key={link.id}>
+                      <Link
+                        href={link.url || "#"}
+                        className="hover:text-pink-500 transition-colors"
+                      >
+                        {link.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="max-w-[1440px] mx-auto px-4 md:px-6 border-t border-orange-200 mt-10 md:mt-12 pt-6 flex flex-col items-center justify-center text-text-amber-700 text-[13px] gap-2">
-          <div className="flex gap-4 items-center">
+        
+        <div className="max-w-[1440px] mx-auto px-4 md:px-6 border-t border-orange-200 mt-10 md:mt-12 pt-6 flex flex-col items-center justify-center text-text-amber-700 text-[13px] gap-4 md:gap-2 text-center">
+          <div className="flex flex-col md:flex-row gap-2 md:gap-4 items-center">
             <span className="font-semibold text-text-pink-500">We Accept:</span>
-            {[
-              settings?.payment_enable_bkash !== "false" && "bKash",
-              settings?.payment_enable_nagad !== "false" && "Nagad",
-              settings?.payment_enable_cod !== "false" && "COD",
-              settings?.payment_enable_card !== "false" && "Cards",
-              settings?.payment_enable_stripe !== "false" && "Stripe",
-              settings?.payment_enable_paypal !== "false" && "PayPal",
-            ]
-              .filter(Boolean)
-              .join(" • ") || "No payment methods configured"}
+            <div className="flex flex-wrap justify-center gap-2">
+              {[
+                settings?.payment_enable_bkash !== "false" && "bKash",
+                settings?.payment_enable_nagad !== "false" && "Nagad",
+                settings?.payment_enable_cod !== "false" && "COD",
+                settings?.payment_enable_card !== "false" && "Cards",
+                settings?.payment_enable_stripe !== "false" && "Stripe",
+                settings?.payment_enable_paypal !== "false" && "PayPal",
+              ]
+                .filter(Boolean)
+                .join(" • ") || "No payment methods configured"}
+            </div>
           </div>
           <p>
             &copy; {new Date().getFullYear()}{" "}
-            {settings?.store_name || "Femecart"}. All rights reserved.
+            {settings?.store_name || "Femecart"}. {settings?.footer_copyright || "All rights reserved."}
           </p>
         </div>
       </footer>

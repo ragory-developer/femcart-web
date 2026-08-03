@@ -70,7 +70,7 @@ export interface ProductFormData {
   // New Inventory Fields
   sku: string;
   countryOfOrigin: string;
-  isHalal: boolean;
+  isFemcart: boolean;
 }
 
 const tabs = [
@@ -106,7 +106,7 @@ export default function CreateProductPage() {
       weight: "",
       sku: "",
       countryOfOrigin: "",
-      isHalal: true,
+      isFemcart: true,
       featured: false,
       categoryIds: [],
       brandId: "",
@@ -155,7 +155,7 @@ export default function CreateProductPage() {
         weight: data.weight || null,
         sku: data.sku || null,
         countryOfOrigin: data.countryOfOrigin || null,
-        isHalal: data.isHalal,
+        isFemcart: data.isFemcart,
         featured: data.featured,
         categoryIds: data.categoryIds,
         brandId: data.brandId || null,

@@ -82,11 +82,11 @@ export default function Hero({
                   {slide.desc}
                 </p>
                 <div className="flex flex-row justify-center gap-2 sm:gap-4 w-full px-2">
-                  <Link href="/categories/bras" className="inline-flex items-center justify-center h-10 w-full sm:w-auto px-2 sm:px-6 rounded-full font-sans font-semibold text-[12px] sm:text-[15px] tracking-[0.3px] transition-all duration-150 cursor-pointer bg-pink-500 text-white hover:bg-pink-600 active:scale-[0.98] shadow-xl md:h-12 gap-2">
+                  <Link href="/categories/bra" className="inline-flex items-center justify-center h-10 w-full sm:w-auto px-2 sm:px-6 rounded-full font-sans font-semibold text-[12px] sm:text-[15px] tracking-[0.3px] transition-all duration-150 cursor-pointer bg-pink-500 text-white hover:bg-pink-600 active:scale-[0.98] shadow-xl md:h-12 gap-2">
                     <ShoppingBag size={14} className="md:w-4 md:h-4" /> Shop
                     Bras
                   </Link>
-                  <Link href="/categories/panties" className="inline-flex items-center justify-center h-10 w-full sm:w-auto px-2 sm:px-6 rounded-full font-sans font-semibold text-[12px] sm:text-[15px] tracking-[0.3px] transition-all duration-150 cursor-pointer bg-white text-pink-500 border border-transparent shadow-sm hover:border-pink-500 md:h-12 gap-2">
+                  <Link href="/categories/panty" className="inline-flex items-center justify-center h-10 w-full sm:w-auto px-2 sm:px-6 rounded-full font-sans font-semibold text-[12px] sm:text-[15px] tracking-[0.3px] transition-all duration-150 cursor-pointer bg-white text-pink-500 border border-transparent shadow-sm hover:border-pink-500 md:h-12 gap-2">
                     <ShoppingBag size={14} className="md:w-4 md:h-4" /> Shop
                     Panties
                   </Link>

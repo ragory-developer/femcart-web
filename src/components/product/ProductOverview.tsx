@@ -1043,7 +1043,7 @@ export default function ProductOverview({
                 </p>
                 <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 mt-0.5 truncate">
                   {product.countryOfOrigin || "Local"} •{" "}
-                  {product.isHalal !== false ? "100% Halal" : "Standard"}
+                  {product.isFemcart !== false ? "100% Original" : "Standard"}
                 </p>
               </div>
             </div>
