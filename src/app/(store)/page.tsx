@@ -45,13 +45,22 @@ async function fetchProducts(query: string = '?limit=50&status=ACTIVE') {
 }
 
 export default async function Home() {
-  const [categories, globalSettings, newArrivals, bestSellers, featured, promotions] = await Promise.all([
+  const [
+    categories,
+    globalSettings,
+    newArrivals,
+    bestSellers,
+    featured,
+    promotions,
+    preOrder,
+  ] = await Promise.all([
     fetchCategories(),
     getGlobalSettings(),
     fetchProducts('?sort=newest&limit=10&status=ACTIVE&card_only=true'),
     fetchProducts('?sort=best_selling&limit=10&status=ACTIVE&card_only=true'),
     fetchProducts('?featured=true&limit=10&status=ACTIVE&card_only=true'),
     fetchProducts('?hasPromotion=true&limit=10&status=ACTIVE&card_only=true'),
+    fetchProducts('?stockStatus=OUT_OF_STOCK&limit=10&status=ACTIVE&card_only=true'),
   ]);
 
   const sectionProducts = {
@@ -59,6 +68,9 @@ export default async function Home() {
     BEST_SELLERS: bestSellers,
     FEATURED: featured,
     PROMOTION: promotions,
+    PRE_ORDER: preOrder,
+    WEEKLY_SALE: promotions,
+    ALL: newArrivals,
   };
 
   return (

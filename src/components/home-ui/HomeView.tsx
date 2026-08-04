@@ -80,11 +80,19 @@ export default function HomeView({
         const Component = ComponentRegistry[section.type];
         if (!Component) return null;
 
-        let products = [];
-        if (section.props?.productSource) {
-          products = sectionProducts[section.props.productSource] || [];
+        let products: any[] = [];
+        if (section.props?.productSource && sectionProducts[section.props.productSource]) {
+          products = sectionProducts[section.props.productSource];
+        } else if (section.type === "FeaturedProducts") {
+          products = sectionProducts["FEATURED"] || [];
+        } else if (section.type === "BestSellers") {
+          products = sectionProducts["BEST_SELLERS"] || [];
+        } else if (section.type === "NewArrivals") {
+          products = sectionProducts["NEW_ARRIVALS"] || [];
         } else if (section.type === "LimitedOffers") {
           products = sectionProducts["PROMOTION"] || [];
+        } else if (section.type === "PreOrder") {
+          products = sectionProducts["PRE_ORDER"] || [];
         }
 
         // Apply slice if section has a limit (though backend already limits to 10)

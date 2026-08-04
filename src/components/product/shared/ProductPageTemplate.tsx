@@ -86,17 +86,38 @@ export async function generateMetadata({
 }
 
 export const getProduct = cache(async (slug: string) => {
+  const fetchWithRetry = async (retries = 1): Promise<Response> => {
+    try {
+      return await fetch(`${API_URL}/api/products/${slug}`, {
+        next: { revalidate: 3600, tags: ["products", `product-${slug}`] },
+        signal: AbortSignal.timeout(10000),
+      });
+    } catch (err) {
+      if (retries > 0) {
+        return await fetchWithRetry(retries - 1);
+      }
+      throw err;
+    }
+  };
+
   try {
-    const res = await fetch(`${API_URL}/api/products/${slug}`, {
-      next: { revalidate: 60 },
-      signal: AbortSignal.timeout(5000),
-    });
-    if (!res.ok) return null;
+    const res = await fetchWithRetry();
+
+    // Explicit 404: product does not exist in database
+    if (res.status === 404) {
+      return null;
+    }
+
+    // Non-200 / Server Error: throw so Next.js does NOT cache a false 404
+    if (!res.ok) {
+      throw new Error(`API error ${res.status} when fetching product "${slug}"`);
+    }
+
     const json = await res.json();
     return json.data;
   } catch (error) {
-    console.error("Failed to fetch product:", error);
-    return null;
+    console.error(`[getProduct Error] Slug: "${slug}"`, error);
+    throw error;
   }
 });
 

@@ -104,9 +104,17 @@ export function ProductCard({ product }: ProductCardProps) {
       ? `৳ ${Number(oldPriceNum).toFixed(2)}`
       : null;
 
+  const isStockOut = (product as any).stock !== undefined && Number((product as any).stock) <= 0;
+
   const badgeText =
     product.badge ||
-    (product.featured ? "New" : product.specialPrice ? "Sale" : undefined);
+    (isStockOut
+      ? "Pre-Order"
+      : product.featured
+        ? "New"
+        : product.specialPrice
+          ? "Sale"
+          : undefined);
   const ratingValue = product.averageRating || product.rating || 0;
   const brandName =
     typeof product.brand === "string"
@@ -168,7 +176,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
       {showBadge && badgeText && (
         <div
-          className={`${badgeClasses} ${badgeText === "New" ? "bg-white text-pink-500" : "bg-amber-700 text-white"}`}
+          className={`${badgeClasses} ${badgeText === "New" ? "bg-white text-pink-500" : badgeText === "Pre-Order" ? "bg-amber-600 text-white" : "bg-amber-700 text-white"}`}
         >
           {badgeText}
         </div>
@@ -224,6 +232,8 @@ export function ProductCard({ product }: ProductCardProps) {
                 <>
                   <Check size={14} className="mr-2" /> Added
                 </>
+              ) : isStockOut ? (
+                "Pre-Order"
               ) : (
                 "Quick Add"
               )}

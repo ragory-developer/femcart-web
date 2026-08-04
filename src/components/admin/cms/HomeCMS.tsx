@@ -80,6 +80,8 @@ const productSourceSchema: FieldSchema = {
     { label: "Weekly Sale", value: "WEEKLY_SALE" },
     { label: "Featured", value: "FEATURED" },
     { label: "New Arrivals", value: "NEW_ARRIVALS" },
+    { label: "Best Sellers", value: "BEST_SELLERS" },
+    { label: "Pre-order / Stock Out", value: "PRE_ORDER" },
   ],
 };
 
