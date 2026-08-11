@@ -14,6 +14,7 @@ import {
   Save,
   Settings,
   ShieldCheck,
+  AlertTriangle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -24,6 +25,7 @@ const menuItems = [
   { id: "security", label: "Security", icon: ShieldCheck },
   { id: "notifications", label: "Notifications", icon: Bell },
   { id: "payments", label: "Payments", icon: CreditCard },
+  { id: "danger_zone", label: "Danger Zone", icon: AlertTriangle },
 ];
 
 export default function SettingsPage() {
@@ -59,6 +61,32 @@ export default function SettingsPage() {
       console.error(e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCleanData = async (type: string, label: string) => {
+    if (!window.confirm(`WARNING: This will PERMANENTLY delete all ${label}. This action cannot be undone! Are you absolutely sure?`)) {
+      return;
+    }
+    
+    setSaving(true);
+    try {
+      const token = localStorage.getItem("femcart_access_token") || localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/api/global-settings/clean/${type}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        showToast.success(`${label} cleaned successfully!`);
+      } else {
+        showToast.error(json.message || `Failed to clean ${label}`);
+      }
+    } catch (e) {
+      console.error(e);
+      showToast.error(`Network error: Could not clean ${label}`);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -1357,6 +1385,71 @@ export default function SettingsPage() {
                         <LinkIcon className="w-4 h-4" />
                       )}
                       Connect Nagad
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : activeTab === "danger_zone" ? (
+            <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-500">
+              <div className="bg-red-50 dark:bg-red-900/20 rounded-3xl p-8 border border-red-100 dark:border-red-800 shadow-sm">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-900/40 flex items-center justify-center text-red-600 dark:text-red-400">
+                    <AlertTriangle className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-black text-red-900 dark:text-red-100 tracking-tight">
+                      Danger Zone
+                    </h2>
+                    <p className="text-red-600/80 dark:text-red-300/80 text-sm font-medium mt-1">
+                      Destructive actions that cannot be undone.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-red-100 dark:border-red-800/50 shadow-sm space-y-6">
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Clean Specific Data</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Choose which parts of the catalog to permanently delete or reset. Use with extreme caution.
+                    </p>
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+                    <button
+                      onClick={() => handleCleanData('products', 'Products & Variants')}
+                      disabled={saving}
+                      className="inline-flex flex-1 justify-center items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-xl font-bold transition-all shadow-sm disabled:opacity-50 min-w-[200px]"
+                    >
+                      {saving ? <Loader2 className="animate-spin w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
+                      Clean All Products
+                    </button>
+                    
+                    <button
+                      onClick={() => handleCleanData('categories', 'Categories')}
+                      disabled={saving}
+                      className="inline-flex flex-1 justify-center items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-xl font-bold transition-all shadow-sm disabled:opacity-50 min-w-[200px]"
+                    >
+                      {saving ? <Loader2 className="animate-spin w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
+                      Clean All Categories
+                    </button>
+
+                    <button
+                      onClick={() => handleCleanData('brands', 'Brands')}
+                      disabled={saving}
+                      className="inline-flex flex-1 justify-center items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-xl font-bold transition-all shadow-sm disabled:opacity-50 min-w-[200px]"
+                    >
+                      {saving ? <Loader2 className="animate-spin w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
+                      Clean All Brands
+                    </button>
+
+                    <button
+                      onClick={() => handleCleanData('caches', 'Caches')}
+                      disabled={saving}
+                      className="inline-flex flex-1 justify-center items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-xl font-bold transition-all shadow-sm disabled:opacity-50 min-w-[200px]"
+                    >
+                      {saving ? <Loader2 className="animate-spin w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
+                      Clear All Caches
                     </button>
                   </div>
                 </div>

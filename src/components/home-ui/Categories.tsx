@@ -49,14 +49,22 @@ export default function Categories({
               className="group block"
             >
               <div className="relative aspect-[4/5] rounded-[24px] overflow-hidden mb-4 shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:ring-4 group-hover:ring-pink-500/20 group-hover:ring-offset-2 ring-offset-white">
-                <img
-                  src={c.image || `https://placehold.co/400x500/fdf2f8/ec4899?text=${encodeURIComponent(c.name)}`}
-                  alt={c.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  onError={(e) => {
-                    e.currentTarget.src = `https://placehold.co/400x500/fdf2f8/ec4899?text=${encodeURIComponent(c.name)}`;
-                  }}
-                />
+                {c.image || c.products?.[0]?.image ? (
+                  <img
+                    src={c.image || c.products?.[0]?.image}
+                    alt={c.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-pink-50 to-pink-100 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-pink-300">
+                      <rect width="7" height="7" x="3" y="3" rx="1"/>
+                      <rect width="7" height="7" x="14" y="3" rx="1"/>
+                      <rect width="7" height="7" x="14" y="14" rx="1"/>
+                      <rect width="7" height="7" x="3" y="14" rx="1"/>
+                    </svg>
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
               </div>
               <h3 className="text-center font-serif text-[15px] md:text-[18px] lg:text-[20px] text-text-pink-500 group-hover:text-pink-500 transition-colors">

@@ -69,10 +69,7 @@ async function getNavigationData() {
             : [],
       }));
     } else {
-      const { megamenuData } =
-        await import("@/components/layout/shared/megamenuData");
-      // Strip 'icon' function from fallback data to prevent serialization errors in Next.js
-      categories = megamenuData.map(({ icon, ...rest }) => rest);
+      categories = [];
     }
 
     let brands = [];
@@ -95,15 +92,12 @@ async function getNavigationData() {
     };
   } catch (error) {
     console.error("Failed to fetch navigation layout data", error);
-    const { megamenuData } =
-      await import("@/components/layout/shared/megamenuData");
-    const safeCategories = megamenuData.map(({ icon, ...rest }) => rest);
     return {
       navbarItems: [],
       topNavbarItems: [],
       bottomNavbarItems: [],
       footerSections: [],
-      categories: safeCategories,
+      categories: [],
       brands: [],
     };
   }
