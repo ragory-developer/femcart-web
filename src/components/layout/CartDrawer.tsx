@@ -218,13 +218,21 @@ export default function CartDrawer() {
                   >
                     View Full Cart
                   </Link>
-                  <Link
-                    href="/checkout"
-                    onClick={closeCart}
-                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white py-[clamp(0.75rem,2vh,1rem)] min-h-[44px] rounded-xl font-black text-[clamp(1rem,4vw,1.125rem)] flex items-center justify-center gap-2 transition-all shadow-xl shadow-emerald-500/25 hover:-translate-y-0.5 active:scale-95"
-                  >
-                    Checkout <ArrowRight size={20} />
-                  </Link>
+                  {settings.enable_checkout_flow !== "false" ? (
+                    <Link
+                      href="/checkout"
+                      onClick={closeCart}
+                      className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white py-[clamp(0.75rem,2vh,1rem)] min-h-[44px] rounded-xl font-black text-[clamp(1rem,4vw,1.125rem)] flex items-center justify-center gap-2 transition-all shadow-xl shadow-emerald-500/25 hover:-translate-y-0.5 active:scale-95"
+                    >
+                      Checkout <ArrowRight size={20} />
+                    </Link>
+                  ) : (
+                    <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-xl text-center">
+                      <p className="text-xs font-bold text-amber-800 dark:text-amber-300">
+                        {settings.checkout_disabled_message || "Online checkout is temporarily paused."}
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

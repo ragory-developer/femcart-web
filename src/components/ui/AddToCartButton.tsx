@@ -3,6 +3,7 @@
 import * as fpixel from "@/lib/fpixel";
 import { getActivePrice } from "@/lib/utils";
 import { useCartStore } from "@/store/cartStore";
+import { useSettingsStore } from "@/store/settingsStore";
 import { motion } from "framer-motion";
 import { Check, Minus, Plus, ShoppingCart, Zap } from "lucide-react";
 import Link from "next/link";
@@ -28,6 +29,8 @@ export default function AddToCartButton({
 
   const removeFromCart = useCartStore((state) => state.removeFromCart);
   const cartItems = useCartStore((state) => state.items);
+  const settings = useSettingsStore((state) => state.settings);
+  const isCheckoutEnabled = settings.enable_checkout_flow !== "false";
 
   const currentId = selectedVariant ? selectedVariant.id : product.id;
   const currentPrice = getActivePrice(selectedVariant || product);
@@ -58,11 +61,12 @@ export default function AddToCartButton({
   })();
 
   const isDisabled = isSelectionRequired || isOutOfStock;
+  const isBuyNowDisabled = isDisabled || !isCheckoutEnabled;
 
   const isInCart = cartItems.some((item) => item.id === currentId);
 
   const handleBuyNow = (e: React.MouseEvent) => {
-    if (isDisabled) {
+    if (isBuyNowDisabled) {
       e.preventDefault();
       return;
     }
@@ -196,17 +200,21 @@ export default function AddToCartButton({
           </motion.button>
 
           <Link
-            href={isDisabled ? "#" : "/checkout"}
+            href={isBuyNowDisabled ? "#" : "/checkout"}
             onClick={handleBuyNow}
             className={`flex-1 min-h-[48px] sm:min-h-[56px] rounded-xl font-bold flex flex-row items-center justify-center gap-1.5 sm:gap-[clamp(0.25rem,1vw,0.5rem)] transition-all duration-300 shadow-xl text-[11px] sm:text-[clamp(0.875rem,2vw,1rem)] px-1 ${
-              isDisabled
+              isBuyNowDisabled
                 ? "bg-gray-200 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed border shadow-none pointer-events-none"
                 : `${buttonColor} text-white shadow-lg hover:-translate-y-0.5 active:scale-95 cursor-pointer`
             }`}
           >
             <Zap size={16} className="fill-current sm:w-5 sm:h-5 shrink-0" />
             <span className="leading-tight whitespace-nowrap">
-              {isOutOfStock ? "Unavailable" : "Buy Now"}
+              {isOutOfStock
+                ? "Unavailable"
+                : !isCheckoutEnabled
+                  ? "Checkout Paused"
+                  : "Buy Now"}
             </span>
           </Link>
         </div>

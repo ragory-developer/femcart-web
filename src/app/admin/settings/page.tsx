@@ -389,6 +389,59 @@ export default function SettingsPage() {
                       </div>
                     </label>
                   </div>
+
+                  {/* Online Checkout Flow Toggle */}
+                  <div className="pt-4 border-t border-gray-100 dark:border-gray-800 space-y-4">
+                    <label className="flex items-center gap-3 cursor-pointer group">
+                      <div className="relative">
+                        <input
+                          type="checkbox"
+                          className="sr-only"
+                          checked={settings.enable_checkout_flow !== "false"}
+                          onChange={(e) =>
+                            handleChange(
+                              "enable_checkout_flow",
+                              e.target.checked ? "true" : "false",
+                            )
+                          }
+                        />
+                        <div
+                          className={`w-12 h-6 rounded-full transition-colors ${settings.enable_checkout_flow !== "false" ? "bg-emerald-500" : "bg-gray-200 dark:bg-gray-700"}`}
+                        ></div>
+                        <div
+                          className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${settings.enable_checkout_flow !== "false" ? "translate-x-6" : ""}`}
+                        ></div>
+                      </div>
+                      <div>
+                        <span className="text-sm font-bold text-gray-700 dark:text-gray-200 group-hover:text-emerald-500 transition-colors uppercase tracking-tight">
+                          Enable Online Checkout
+                        </span>
+                        <p className="text-[10px] text-gray-500 font-medium">
+                          Turn online checkout and &quot;Buy Now&quot; on or off across the store. When turned off, checkout routes and buttons are disabled.
+                        </p>
+                      </div>
+                    </label>
+
+                    {settings.enable_checkout_flow === "false" && (
+                      <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 space-y-2 animate-in fade-in duration-300">
+                        <label className="text-xs font-black text-amber-800 dark:text-amber-300 uppercase tracking-wider">
+                          Checkout Disabled Notice Message
+                        </label>
+                        <input
+                          type="text"
+                          value={settings.checkout_disabled_message ?? ""}
+                          onChange={(e) =>
+                            handleChange("checkout_disabled_message", e.target.value)
+                          }
+                          className="w-full px-4 py-2.5 rounded-lg bg-white dark:bg-gray-800 border border-amber-200 dark:border-amber-700 focus:ring-2 focus:ring-amber-500 text-sm font-medium text-gray-900 dark:text-white"
+                          placeholder="e.g. Online ordering is temporarily paused. Please check back soon or contact support."
+                        />
+                        <p className="text-[10px] text-amber-700 dark:text-amber-400 font-medium">
+                          This notice will be displayed to customers on the cart and when visiting checkout.
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </section>
 

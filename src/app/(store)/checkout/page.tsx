@@ -283,6 +283,37 @@ function CheckoutContent() {
     }
   };
 
+  if (settings.enable_checkout_flow === "false") {
+    return (
+      <div className="container mx-auto px-4 py-24 text-center min-h-[60vh] flex flex-col justify-center items-center">
+        <div className="w-16 h-16 rounded-full bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-6">
+          <ShieldCheck size={36} />
+        </div>
+        <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-4">
+          Online Checkout Paused
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
+          {settings.checkout_disabled_message ||
+            "Online ordering is temporarily paused. Please check back soon or contact support."}
+        </p>
+        <div className="flex items-center gap-4 flex-wrap justify-center">
+          <Link
+            href="/cart"
+            className="px-8 py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 font-bold rounded-xl transition-colors"
+          >
+            View Cart
+          </Link>
+          <Link
+            href="/catalog"
+            className="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-colors"
+          >
+            Browse Catalog
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   if (items.length === 0) {
     return (
       <div className="container mx-auto px-4 py-24 text-center min-h-[60vh] flex flex-col justify-center items-center">
@@ -290,7 +321,7 @@ function CheckoutContent() {
           Your Cart is Empty
         </h1>
         <p className="text-gray-500 mb-8 max-w-md mx-auto">
-          Looks like you haven't added anything to your cart yet. Let's find
+          Looks like you haven&apos;t added anything to your cart yet. Let&apos;s find
           some amazing products!
         </p>
         <Link

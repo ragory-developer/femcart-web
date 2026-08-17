@@ -214,12 +214,23 @@ export default function CartPage() {
                 </span>
               </div>
 
-              <Link
-                href="/checkout"
-                className="w-full bg-primary hover:bg-primary-hover text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-xl shadow-primary/20 hover:-translate-y-0.5 mt-auto"
-              >
-                Proceed to Checkout <ArrowRight size={20} />
-              </Link>
+              {settings.enable_checkout_flow !== "false" ? (
+                <Link
+                  href="/checkout"
+                  className="w-full bg-primary hover:bg-primary-hover text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-xl shadow-primary/20 hover:-translate-y-0.5 mt-auto"
+                >
+                  Proceed to Checkout <ArrowRight size={20} />
+                </Link>
+              ) : (
+                <div className="p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 rounded-xl text-center">
+                  <p className="text-sm font-bold text-amber-800 dark:text-amber-300">
+                    {settings.checkout_disabled_message || "Online checkout is temporarily paused."}
+                  </p>
+                  <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                    You can keep items in your cart or browse our catalog.
+                  </p>
+                </div>
+              )}
 
               <div className="mt-6 flex flex-col items-center gap-4 text-gray-400">
                 <div className="flex items-center gap-2 justify-center w-full">
