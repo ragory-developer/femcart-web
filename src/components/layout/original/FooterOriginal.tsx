@@ -152,7 +152,7 @@ export default function Footer({
                 <span className="font-medium leading-relaxed whitespace-pre-line">
                   {contactAddress ||
                     settings.footer_address ||
-                    "123 Femcart Avenue, Suite 400\nNew York, NY 10001"}
+                    "123 Famecart Avenue, Suite 400\nNew York, NY 10001"}
                 </span>
               </li>
               <li className="flex gap-3 text-white/80 items-center">
@@ -166,7 +166,7 @@ export default function Footer({
                 <span className="font-medium truncate">
                   {contactEmail ||
                     settings.footer_email ||
-                    "support@femcart.test"}
+                    "support@famecart.com"}
                 </span>
               </li>
             </ul>
@@ -177,7 +177,7 @@ export default function Footer({
         <div className="pt-8 border-t border-gray-800 text-center md:flex md:justify-between md:text-left text-gray-500 text-[clamp(0.75rem,1.5vw,0.875rem)] font-medium flex flex-col md:flex-row gap-4 items-center">
           <p>
             &copy; {new Date().getFullYear()}{" "}
-            {settings.footer_copyright || "Femcart. All rights reserved."}
+            {settings.footer_copyright || "Famecart. All rights reserved."}
           </p>
           <div className="mt-4 md:mt-0 space-x-4">
             <Link

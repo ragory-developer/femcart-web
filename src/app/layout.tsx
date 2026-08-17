@@ -29,9 +29,9 @@ const notoSansBengali = Noto_Sans_Bengali({
 
 export const metadata: Metadata = {
   title:
-    "Femcart — Premium Women's Intimate Apparel & Lifestyle E-commerce Platform",
+    "Famecart — Premium Women's Intimate Apparel & Lifestyle E-commerce Platform",
   description:
-    "Femcart is a premium online shopping platform dedicated to women's intimate apparel, shapewear, activewear, and essential lifestyle products.",
+    "Famecart is a premium online shopping platform dedicated to women's intimate apparel, shapewear, activewear, and essential lifestyle products.",
 };
 
 import NavigationProvider from "@/components/providers/NavigationProvider";

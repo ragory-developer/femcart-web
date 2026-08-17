@@ -12,6 +12,12 @@ import {
   Search,
   Trash2,
   Star,
+  Boxes,
+  Package,
+  X,
+  Loader2,
+  Check,
+  AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
 import NextImage from "next/image";
@@ -36,7 +42,14 @@ interface Product {
   categories: { id: string; name: string }[];
   brand: { id: string; name: string; slug: string } | null;
   priceRange?: { min: number; max: number } | null;
-  variants?: { id: string; stock: number }[];
+  sku?: string | null;
+  variants?: {
+    id: string;
+    stock: number;
+    sku?: string | null;
+    price?: number;
+    attributes?: { name: string; value: string }[];
+  }[];
 }
 
 const API = `${API_URL}/api/products`;
@@ -65,7 +78,83 @@ export default function AdminProductsPage() {
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [pendingDeletions, setPendingDeletions] = useState<string[]>([]);
   const [showUndo, setShowUndo] = useState(false);
+  const [stockAdjustProduct, setStockAdjustProduct] = useState<Product | null>(null);
+  const [adjustingStock, setAdjustingStock] = useState(false);
+  const [simpleStockValue, setSimpleStockValue] = useState<number>(0);
+  const [variantStockValues, setVariantStockValues] = useState<Record<string, number>>({});
   const { settings } = useSettingsStore();
+
+  const handleOpenStockAdjust = (product: Product) => {
+    setStockAdjustProduct(product);
+    setSimpleStockValue(product.stock || 0);
+    const vMap: Record<string, number> = {};
+    product.variants?.forEach((v: any) => {
+      vMap[v.id] = v.stock || 0;
+    });
+    setVariantStockValues(vMap);
+  };
+
+  const handleSaveStockAdjust = async () => {
+    if (!stockAdjustProduct) return;
+    setAdjustingStock(true);
+    try {
+      const isVariable =
+        stockAdjustProduct.productType === "VARIABLE" ||
+        (stockAdjustProduct.variants && stockAdjustProduct.variants.length > 0);
+
+      const body = isVariable
+        ? {
+            variantStockUpdates: Object.entries(variantStockValues).map(
+              ([variantId, stock]) => ({
+                variantId,
+                stock: Number(stock) || 0,
+              }),
+            ),
+          }
+        : { stock: Number(simpleStockValue) || 0 };
+
+      const res = await fetch(`${API_URL}/api/products/${stockAdjustProduct.id}/stock`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("femcart_access_token") || localStorage.getItem("token") || ""}`,
+        },
+        body: JSON.stringify(body),
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast.success("Stock updated successfully");
+        setProducts((prev) =>
+          prev.map((p) => {
+            if (p.id !== stockAdjustProduct.id) return p;
+            if (isVariable) {
+              const updatedVariants = p.variants?.map((v: any) => ({
+                ...v,
+                stock:
+                  variantStockValues[v.id] !== undefined
+                    ? variantStockValues[v.id]
+                    : v.stock,
+              }));
+              const totalStock =
+                updatedVariants?.reduce(
+                  (sum: number, v: any) => sum + (v.stock || 0),
+                  0,
+                ) || 0;
+              return { ...p, stock: totalStock, variants: updatedVariants };
+            }
+            return { ...p, stock: simpleStockValue };
+          }),
+        );
+        setStockAdjustProduct(null);
+      } else {
+        showToast.error(json.message || "Failed to update stock");
+      }
+    } catch {
+      showToast.error("Error updating stock");
+    } finally {
+      setAdjustingStock(false);
+    }
+  };
 
   // Columns layout configuration
   const columns = useMemo<DataTableColumn<Product>[]>(() => [
@@ -123,29 +212,25 @@ export default function AdminProductsPage() {
       ),
     },
     {
-      key: "categories",
+      key: "category",
       header: "Categories",
-      thClassName: "w-[18%]",
-      render: (product) => {
-        const catText =
-          product.categories.length > 0
-            ? product.categories.map((c) => c.name).join(", ")
-            : "";
-        return (
-          <p
-            className="text-xs text-gray-500 dark:text-gray-400 font-medium leading-normal line-clamp-1 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors"
-            title={catText}
-          >
-            {product.categories.length > 0 ? (
-              catText
-            ) : (
-              <span className="text-[10px] font-bold text-pink-500 dark:text-pink-500">
-                Uncategorized
+      thClassName: "w-[15%]",
+      render: (product) => (
+        <div className="flex flex-wrap gap-1">
+          {product.categories?.length > 0 ? (
+            product.categories.map((c) => (
+              <span
+                key={c.id}
+                className="inline-flex px-2 py-0.5 rounded-md text-[11px] font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
+              >
+                {c.name}
               </span>
-            )}
-          </p>
-        );
-      },
+            ))
+          ) : (
+            <span className="text-xs text-gray-400">Uncategorized</span>
+          )}
+        </div>
+      ),
     },
     {
       key: "brand",
@@ -166,15 +251,21 @@ export default function AdminProductsPage() {
     {
       key: "price",
       header: "Price",
-      thClassName: "w-[13%]",
+      thClassName: "w-[12%]",
       render: (product) => (
-        <div>
-          <div className="font-semibold text-sm text-gray-800 dark:text-gray-200">
-            {formatPrice(product)}
-          </div>
-          {product.productType === "VARIABLE" && (
-            <span className="inline-flex items-center gap-1 mt-1.5 text-[9px] bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">
-              <LayoutGrid size={10} /> Variable
+        <div className="flex flex-col">
+          {product.productType === "VARIABLE" && product.priceRange ? (
+            <span className="font-bold font-mono text-sm text-gray-900 dark:text-white">
+              ৳{product.priceRange.min} - ৳{product.priceRange.max}
+            </span>
+          ) : (
+            <span className="font-bold font-mono text-sm text-gray-900 dark:text-white">
+              ৳{product.price}
+            </span>
+          )}
+          {product.specialPrice && (
+            <span className="text-[11px] font-mono text-pink-500 line-through">
+              ৳{product.specialPrice}
             </span>
           )}
         </div>
@@ -192,9 +283,14 @@ export default function AdminProductsPage() {
               0,
             ) || 0;
           return (
-            <div className="flex flex-col gap-1">
+            <button
+              type="button"
+              onClick={() => handleOpenStockAdjust(product)}
+              className="flex flex-col gap-1 items-start text-left group/stock cursor-pointer p-1 -m-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              title="Click to quickly adjust variant stock"
+            >
               <span
-                className={`inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold font-mono w-fit whitespace-nowrap ${
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold font-mono w-fit whitespace-nowrap group-hover/stock:ring-2 group-hover/stock:ring-emerald-400 transition-all ${
                   totalStock > 10
                     ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
                     : totalStock > 0
@@ -203,26 +299,35 @@ export default function AdminProductsPage() {
                 }`}
               >
                 {totalStock > 0 ? `${totalStock} in stock` : "Out of stock"}
+                <Pencil size={10} className="opacity-0 group-hover/stock:opacity-100 transition-opacity" />
               </span>
               <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">
                 ({product.variants?.length || 0} variants)
               </span>
-            </div>
+            </button>
           );
         }
 
         return (
-          <span
-            className={`inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold font-mono w-fit whitespace-nowrap ${
-              product.stock > 10
-                ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
-                : product.stock > 0
-                  ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
-                  : "bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400"
-            }`}
+          <button
+            type="button"
+            onClick={() => handleOpenStockAdjust(product)}
+            className="flex items-center group/stock cursor-pointer p-1 -m-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            title="Click to quickly adjust stock"
           >
-            {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
-          </span>
+            <span
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold font-mono w-fit whitespace-nowrap group-hover/stock:ring-2 group-hover/stock:ring-emerald-400 transition-all ${
+                product.stock > 10
+                  ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
+                  : product.stock > 0
+                    ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
+                    : "bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400"
+              }`}
+            >
+              {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
+              <Pencil size={10} className="opacity-0 group-hover/stock:opacity-100 transition-opacity" />
+            </span>
+          </button>
         );
       },
     },
@@ -905,6 +1010,188 @@ export default function AdminProductsPage() {
         onComplete={handleUndoComplete}
         onDismiss={handleUndoCancel}
       />
+
+      {/* Quick Stock Adjustment Modal */}
+      {stockAdjustProduct && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-gray-850 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-2xl max-w-lg w-full overflow-hidden animate-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-750 flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/50">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <Package size={20} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-base text-gray-900 dark:text-white">
+                    Adjust Inventory Balance
+                  </h3>
+                  <p className="text-xs text-gray-500 line-clamp-1 max-w-[280px]">
+                    {stockAdjustProduct.name}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setStockAdjustProduct(null)}
+                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-6 space-y-5 max-h-[65vh] overflow-y-auto">
+              {stockAdjustProduct.productType === "VARIABLE" ||
+              (stockAdjustProduct.variants &&
+                stockAdjustProduct.variants.length > 0) ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between pb-2 border-b border-gray-100 dark:border-gray-750">
+                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                      Variation Name &amp; SKU
+                    </span>
+                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
+                      Stock Count
+                    </span>
+                  </div>
+                  {stockAdjustProduct.variants?.map((v, idx) => {
+                    const label =
+                      v.attributes
+                        ?.map((a) => `${a.name}: ${a.value}`)
+                        .join(" · ") || `Variation #${idx + 1}`;
+                    return (
+                      <div
+                        key={v.id}
+                        className="flex items-center justify-between gap-4 p-3 rounded-xl border border-gray-100 dark:border-gray-750 bg-gray-50/50 dark:bg-gray-800/30"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold text-gray-800 dark:text-gray-200 truncate">
+                            {label}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            SKU: {v.sku || "Auto"}
+                          </p>
+                        </div>
+                        <div className="w-32 shrink-0">
+                          <input
+                            type="number"
+                            value={variantStockValues[v.id] ?? v.stock ?? 0}
+                            onChange={(e) =>
+                              setVariantStockValues((prev) => ({
+                                ...prev,
+                                [v.id]: parseInt(e.target.value) || 0,
+                              }))
+                            }
+                            className={`w-full px-3 py-1.5 rounded-lg border ${
+                              (variantStockValues[v.id] ?? v.stock ?? 0) < 0
+                                ? "border-amber-300 dark:border-amber-700 bg-amber-50/40 dark:bg-amber-950/20 text-amber-900 dark:text-amber-200"
+                                : "border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                            } text-sm font-bold text-right focus:ring-2 focus:ring-emerald-500 focus:outline-none`}
+                          />
+                          {(variantStockValues[v.id] ?? v.stock ?? 0) < 0 && (
+                            <p className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold text-right mt-0.5 flex items-center justify-end gap-0.5">
+                              <AlertTriangle size={10} /> Backorder
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
+                      <span>On-Hand Stock Quantity</span>
+                      {simpleStockValue < 0 && (
+                        <span className="text-amber-600 dark:text-amber-400 text-xs font-bold flex items-center gap-1">
+                          <AlertTriangle size={12} /> Negative Stock
+                        </span>
+                      )}
+                    </label>
+                    <span className="text-xs text-gray-400">
+                      SKU: {stockAdjustProduct.sku || "N/A"}
+                    </span>
+                  </div>
+
+                  <input
+                    type="number"
+                    value={simpleStockValue}
+                    onChange={(e) =>
+                      setSimpleStockValue(parseInt(e.target.value) || 0)
+                    }
+                    className={`w-full px-4 py-3 rounded-xl border ${
+                      simpleStockValue < 0
+                        ? "border-amber-300 dark:border-amber-700 bg-amber-50/40 dark:bg-amber-950/20 text-amber-900 dark:text-amber-200"
+                        : "border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                    } text-xl font-black focus:ring-2 focus:ring-emerald-500 focus:outline-none`}
+                  />
+
+                  {simpleStockValue < 0 && (
+                    <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1">
+                      <AlertTriangle size={13} className="shrink-0" /> Negative balance ({simpleStockValue} units) indicates backorders / oversold deficit.
+                    </p>
+                  )}
+
+                  {/* Quick Increment Buttons */}
+                  <div className="flex items-center gap-2 pt-1 flex-wrap">
+                    <span className="text-xs text-gray-400 font-medium">
+                      Quick Adjust:
+                    </span>
+                    {[
+                      { label: "+10", delta: 10 },
+                      { label: "+50", delta: 50 },
+                      { label: "+100", delta: 100 },
+                      { label: "-10", delta: -10 },
+                      { label: "-50", delta: -50 },
+                    ].map((btn) => (
+                      <button
+                        key={btn.label}
+                        type="button"
+                        onClick={() =>
+                          setSimpleStockValue((prev) => prev + btn.delta)
+                        }
+                        className="px-2.5 py-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-xs font-bold text-gray-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-emerald-950 hover:text-emerald-600 dark:hover:text-emerald-400 hover:border-emerald-200 transition-colors cursor-pointer"
+                      >
+                        {btn.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-gray-100 dark:border-gray-750 bg-gray-50/50 dark:bg-gray-800/50 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setStockAdjustProduct(null)}
+                disabled={adjustingStock}
+                className="px-4 py-2 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-750 transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveStockAdjust}
+                disabled={adjustingStock}
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 transition-colors shadow-sm cursor-pointer"
+              >
+                {adjustingStock ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Check size={16} />
+                    Save Stock Changes
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

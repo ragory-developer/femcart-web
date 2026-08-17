@@ -17,10 +17,13 @@ import {
   Trash2,
   X,
   AlertCircle,
+  AlertTriangle,
+  Save,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { ProductFormValues } from "@/lib/validations/product";
+import { showToast } from "@/lib/toast";
 
 const VARIATIONS_API = `${API_URL}/api/variations`;
 
@@ -50,6 +53,7 @@ export interface VariantRow {
   sku: string;
   comparePrice: string;
   stock: string;
+  weight?: string;
   image: string;
 }
 
@@ -78,6 +82,7 @@ function makeRow(
     sku: "",
     comparePrice: "",
     stock: "0",
+    weight: "",
     image: "",
   };
 }
@@ -365,24 +370,127 @@ function VariationSelector({
 interface VariantCardProps {
   v: VariantRow;
   idx: number;
+  productId?: string;
   expanded: boolean;
   hasError?: boolean;
   onToggle: () => void;
-  onUpdate: (idx: number, field: keyof VariantRow, value: any) => void;
   onRemove: (idx: number) => void;
 }
 
 function VariantCard({
   v,
   idx,
+  productId,
   expanded,
   hasError,
   onToggle,
-  onUpdate,
   onRemove,
 }: VariantCardProps) {
   const [mediaOpen, setMediaOpen] = useState(false);
-  const { register } = useFormContext<ProductFormValues>();
+  const [savingVariant, setSavingVariant] = useState(false);
+  const { register, watch, setValue, getValues } = useFormContext<ProductFormValues>();
+  const watchedVariant = watch(`variants.${idx}`);
+
+  const image = watchedVariant?.image ?? v.image ?? "";
+  const enabled = watchedVariant?.enabled ?? v.enabled ?? true;
+  const isDefault = watchedVariant?.isDefault ?? v.isDefault ?? false;
+  const price = watchedVariant?.price ?? v.price ?? "";
+  const attributes = watchedVariant?.attributes || v.attributes || [];
+  const stockStr = watchedVariant?.stock ?? v.stock ?? "0";
+  const stockNum = !isNaN(parseInt(stockStr)) ? parseInt(stockStr) : 0;
+  const isNegativeStock = stockNum < 0;
+
+  const handleToggleEnabled = () => {
+    setValue(`variants.${idx}.enabled`, !enabled, { shouldDirty: true });
+  };
+
+  const handleSetDefault = () => {
+    const all = getValues("variants") || [];
+    all.forEach((_, i) => {
+      setValue(`variants.${i}.isDefault`, i === idx, { shouldDirty: true });
+    });
+  };
+
+  const handleSetImage = (url: string) => {
+    setValue(`variants.${idx}.image`, url, { shouldDirty: true });
+  };
+
+  const handleSaveSingleVariant = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!productId) {
+      showToast.info(
+        "Please save the main product first before saving individual variations."
+      );
+      return;
+    }
+
+    setSavingVariant(true);
+    try {
+      const currentValues = getValues(`variants.${idx}`);
+      const parentPrice = parseFloat(getValues("price") || "0") || 0;
+      const effectivePrice =
+        currentValues.price &&
+        !isNaN(parseFloat(currentValues.price)) &&
+        currentValues.price.trim() !== ""
+          ? parseFloat(currentValues.price)
+          : parentPrice;
+
+      const targetVariantId = v.id || currentValues.id || "new";
+
+      const payload = {
+        sku: currentValues.sku || null,
+        price: effectivePrice,
+        specialPrice:
+          currentValues.specialPrice &&
+          !isNaN(parseFloat(currentValues.specialPrice))
+            ? parseFloat(currentValues.specialPrice)
+            : null,
+        specialPriceStart: currentValues.specialPriceStart || null,
+        specialPriceEnd: currentValues.specialPriceEnd || null,
+        stock: !isNaN(parseInt(currentValues.stock))
+          ? parseInt(currentValues.stock)
+          : 0,
+        weight: currentValues.weight || null,
+        image: currentValues.image || null,
+        isDefault: currentValues.isDefault ?? false,
+        enabled: currentValues.enabled ?? true,
+        attributes: currentValues.attributes || v.attributes || [],
+      };
+
+      const token =
+        localStorage.getItem("femcart_access_token") ||
+        localStorage.getItem("token") ||
+        "";
+      const res = await fetch(
+        `${API_URL}/api/products/${productId}/variants/${targetVariantId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const data = await res.json();
+      if (data.success) {
+        if (data.data?.id) {
+          setValue(`variants.${idx}.id`, data.data.id);
+          v.id = data.data.id;
+        }
+        showToast.success(
+          `Variation ${currentValues.sku || `#${idx + 1}`} saved successfully!`
+        );
+      } else {
+        showToast.error(data.message || "Failed to save variation");
+      }
+    } catch (err: any) {
+      showToast.error(err.message || "Failed to save variation");
+    } finally {
+      setSavingVariant(false);
+    }
+  };
 
   return (
     <div
@@ -391,7 +499,7 @@ function VariantCard({
           ? "border-emerald-400 dark:border-emerald-500 shadow-md ring-1 ring-emerald-400 dark:ring-emerald-500 bg-white dark:bg-gray-800 z-10 relative"
           : hasError
             ? "border-pink-400 dark:border-pink-500 shadow-sm bg-pink-50/20 dark:bg-pink-900/10"
-            : v.enabled
+            : enabled
               ? "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
               : "border-gray-100 dark:border-gray-700/50 bg-gray-50 dark:bg-gray-800/50 opacity-60"
       }`}
@@ -414,9 +522,9 @@ function VariantCard({
           className="w-11 h-11 shrink-0 rounded-lg overflow-hidden border-2 border-dashed border-gray-200 dark:border-gray-600 hover:border-emerald-400 transition-colors flex items-center justify-center bg-gray-50 dark:bg-gray-900/50 cursor-pointer"
           title="Pick image from media library"
         >
-          {v.image ? (
+          {image ? (
             <img
-              src={resolveImageUrl(v.image)}
+              src={resolveImageUrl(image)}
               alt=""
               className="w-full h-full object-cover"
             />
@@ -427,13 +535,13 @@ function VariantCard({
 
         {/* Attribute inline row */}
         <div className="flex-1 flex items-center gap-2 flex-wrap min-w-0">
-          {v.isDefault && (
+          {isDefault && (
             <span className="shrink-0 text-[10px] bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 rounded-full font-bold leading-none">
               Default
             </span>
           )}
           <span className="text-sm text-gray-700 dark:text-gray-200 truncate">
-            {v.attributes.map((a, i) => (
+            {attributes.map((a: any, i: number) => (
               <span key={a.name}>
                 {i > 0 && (
                   <span className="text-gray-300 dark:text-gray-600 mx-1">
@@ -449,11 +557,43 @@ function VariantCard({
           </span>
         </div>
 
-        {/* Quick price badge */}
-        {v.price && (
-          <span className="text-sm font-bold text-gray-700 dark:text-gray-200 shrink-0">
-            ${v.price}
+        {/* Stock status badge */}
+        {isNegativeStock ? (
+          <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-2 py-0.5 rounded-md flex items-center gap-1 border border-amber-200 dark:border-amber-800">
+            <AlertTriangle size={11} /> Deficit ({stockNum})
           </span>
+        ) : stockNum === 0 ? (
+          <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-750 px-2 py-0.5 rounded-md">
+            Out of stock (0)
+          </span>
+        ) : (
+          <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-md">
+            {stockNum} in stock
+          </span>
+        )}
+
+        {/* Quick price badge */}
+        {price && (
+          <span className="text-sm font-bold text-gray-700 dark:text-gray-200 shrink-0">
+            ৳{price}
+          </span>
+        )}
+
+        {/* Quick Save single variant icon if in edit mode */}
+        {productId && (
+          <button
+            type="button"
+            onClick={handleSaveSingleVariant}
+            disabled={savingVariant}
+            title="Quick save this variation"
+            className="p-1.5 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-md transition-colors cursor-pointer"
+          >
+            {savingVariant ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <Save size={14} />
+            )}
+          </button>
         )}
 
         {/* Chevron */}
@@ -487,9 +627,9 @@ function VariantCard({
               className="flex items-center gap-4 p-3 rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-600 hover:border-emerald-400 dark:hover:border-emerald-500 cursor-pointer transition-colors group bg-white dark:bg-gray-800"
             >
               <div className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
-                {v.image ? (
+                {image ? (
                   <img
-                    src={resolveImageUrl(v.image)}
+                    src={resolveImageUrl(image)}
                     alt=""
                     className="w-full h-full object-cover"
                   />
@@ -502,18 +642,18 @@ function VariantCard({
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                  {v.image ? "Change image" : "Upload image"}
+                  {image ? "Change image" : "Upload image"}
                 </p>
                 <p className="text-xs text-gray-400 mt-0.5">
                   Click to open Media Library
                 </p>
               </div>
-              {v.image && (
+              {image && (
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onUpdate(idx, "image", "");
+                    handleSetImage("");
                   }}
                   className="p-1.5 text-gray-400 hover:text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20 rounded-md transition-colors shrink-0"
                   title="Remove image"
@@ -527,32 +667,32 @@ function VariantCard({
           {/* Enable / Disable toggle */}
           <div
             className={`flex items-center justify-between p-4 rounded-xl border transition-colors ${
-              v.enabled
+              enabled
                 ? "border-emerald-200 dark:border-emerald-800/50 bg-emerald-50/40 dark:bg-emerald-900/10"
                 : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
             }`}
           >
             <div>
               <p
-                className={`text-sm font-bold ${v.enabled ? "text-emerald-700 dark:text-emerald-400" : "text-gray-700 dark:text-gray-300"}`}
+                className={`text-sm font-bold ${enabled ? "text-emerald-700 dark:text-emerald-400" : "text-gray-700 dark:text-gray-300"}`}
               >
-                {v.enabled ? "Variation Enabled" : "Variation Disabled"}
+                {enabled ? "Variation Enabled" : "Variation Disabled"}
               </p>
               <p className="text-xs text-gray-500 mt-0.5">
-                {v.enabled
+                {enabled
                   ? "This variation will be visible to customers."
                   : "This variation is hidden from the store."}
               </p>
             </div>
             <button
               type="button"
-              onClick={() => onUpdate(idx, "enabled", !v.enabled)}
+              onClick={handleToggleEnabled}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 shrink-0 ${
-                v.enabled ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-600"
+                enabled ? "bg-emerald-500" : "bg-gray-300 dark:bg-gray-600"
               }`}
             >
               <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${v.enabled ? "translate-x-6" : "translate-x-1"}`}
+                className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${enabled ? "translate-x-6" : "translate-x-1"}`}
               />
             </button>
           </div>
@@ -561,16 +701,16 @@ function VariantCard({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
-                Regular Price <span className="text-pink-500">*</span>
+                Regular Price <span className="text-gray-400 font-normal">(Optional — defaults to base price)</span>
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
-                  $
+                  ৳
                 </span>
                 <input
                   type="text"
                   {...register(`variants.${idx}.price`)}
-                  placeholder="0.00"
+                  placeholder="Leave empty to use base price"
                   className="w-full pl-7 pr-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
               </div>
@@ -581,7 +721,7 @@ function VariantCard({
               </label>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
-                  $
+                  ৳
                 </span>
                 <input
                   type="text"
@@ -617,9 +757,9 @@ function VariantCard({
             </div>
           </div>
 
-          {/* SKU + Set default */}
-          <div className="flex items-center gap-3">
-            <div className="flex-1">
+          {/* SKU + Stock + Weight + Set default */}
+          <div className="flex flex-wrap items-start gap-3">
+            <div className="flex-1 min-w-[120px]">
               <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
                 SKU
               </label>
@@ -630,26 +770,68 @@ function VariantCard({
                 className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
-            <div className="flex-1">
-              <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
-                Stock
+            <div className="flex-1 min-w-[140px]">
+              <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                <span>Stock Quantity</span>
+                {isNegativeStock && (
+                  <span className="text-amber-500 text-[10px] font-bold flex items-center gap-0.5">
+                    <AlertTriangle size={10} /> Backorder
+                  </span>
+                )}
               </label>
               <input
                 type="number"
                 {...register(`variants.${idx}.stock`)}
                 placeholder="0"
+                className={`w-full px-3 py-2 rounded-lg border ${
+                  isNegativeStock
+                    ? "border-amber-300 dark:border-amber-700 bg-amber-50/40 dark:bg-amber-950/20 text-amber-900 dark:text-amber-200"
+                    : "border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                } text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold`}
+              />
+              {isNegativeStock && (
+                <p className="mt-1 text-[11px] text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1">
+                  <AlertTriangle size={12} className="shrink-0" /> Negative balance ({stockNum}) indicates deficit / backorders.
+                </p>
+              )}
+            </div>
+            <div className="flex-1 min-w-[120px]">
+              <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">
+                Weight (Optional)
+              </label>
+              <input
+                type="text"
+                {...register(`variants.${idx}.weight`)}
+                placeholder="e.g. 250g, 1kg"
                 className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
-            {!v.isDefault && (
-              <button
-                type="button"
-                onClick={() => onUpdate(idx, "isDefault", true)}
-                className="mt-5 px-3 py-2 rounded-lg border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 text-xs font-semibold hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
-              >
-                Set as Default
-              </button>
-            )}
+            <div className="flex items-center gap-2 mt-6 shrink-0 flex-wrap">
+              {!isDefault && (
+                <button
+                  type="button"
+                  onClick={handleSetDefault}
+                  className="px-3 py-2 rounded-lg border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 text-xs font-semibold hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors"
+                >
+                  Set as Default
+                </button>
+              )}
+              {productId && (
+                <button
+                  type="button"
+                  onClick={handleSaveSingleVariant}
+                  disabled={savingVariant}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-sm hover:shadow-emerald-600/20 disabled:opacity-50 cursor-pointer"
+                >
+                  {savingVariant ? (
+                    <Loader2 size={13} className="animate-spin" />
+                  ) : (
+                    <Save size={13} />
+                  )}
+                  {savingVariant ? "Saving..." : "Save Variant"}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -661,7 +843,7 @@ function VariantCard({
         preferredSize="medium"
         title="Pick Variation Image"
         onSelect={(_media, sizeUrl) => {
-          onUpdate(idx, "image", sizeUrl);
+          handleSetImage(sizeUrl);
           setMediaOpen(false);
         }}
       />
@@ -676,16 +858,21 @@ interface SelectorEntry {
   selectedValues: string[];
 }
 
-export default function VariationTab() {
+export default function VariationTab({
+  productId,
+}: {
+  productId?: string;
+} = {}) {
   const {
     control,
+    getValues,
+    setValue,
     formState: { errors },
   } = useFormContext<ProductFormValues>();
   const {
     fields,
     append,
     remove: removeField,
-    update: updateField,
   } = useFieldArray({
     control,
     name: "variants",
@@ -717,6 +904,39 @@ export default function VariationTab() {
   useEffect(() => {
     fetchCatalog();
   }, [fetchCatalog]);
+
+  // Pre-populate variation selectors from existing variants if editing
+  useEffect(() => {
+    if (catalog.length === 0) return;
+    const currentVariants = getValues("variants") || [];
+    if (currentVariants.length === 0) return;
+
+    const attrMap = new Map<string, Set<string>>();
+    currentVariants.forEach((v) => {
+      v.attributes?.forEach((a) => {
+        if (!attrMap.has(a.name)) attrMap.set(a.name, new Set());
+        if (a.value) attrMap.get(a.name)!.add(a.value);
+      });
+    });
+
+    if (attrMap.size > 0) {
+      const initialSelectors: SelectorEntry[] = [];
+      attrMap.forEach((values, name) => {
+        const catVar = catalog.find(
+          (c) => c.name.toLowerCase() === name.toLowerCase(),
+        );
+        if (catVar) {
+          initialSelectors.push({
+            variationId: catVar.id,
+            selectedValues: Array.from(values),
+          });
+        }
+      });
+      if (initialSelectors.length > 0) {
+        setSelectors(initialSelectors);
+      }
+    }
+  }, [catalog, getValues]);
 
   // ── Selector list management ────────────────────────────────────────────
 
@@ -782,13 +1002,14 @@ export default function VariationTab() {
       });
     if (axes.length === 0) return;
     const combinations = cartesian(axes);
-    const existingLabels = new Set(variants.map(rowLabel));
+    const currentVariants = (getValues("variants") as VariantRow[]) || [];
+    const existingLabels = new Set(currentVariants.map(rowLabel));
     const newRows: VariantRow[] = [];
     combinations.forEach((combo) => {
       const label = combo.map((c) => c.value).join(" / ");
       if (!existingLabels.has(label)) {
         newRows.push(
-          makeRow(combo, variants.length === 0 && newRows.length === 0),
+          makeRow(combo, currentVariants.length === 0 && newRows.length === 0),
         );
         existingLabels.add(label);
       }
@@ -800,27 +1021,12 @@ export default function VariationTab() {
 
   // ── Variant row actions ─────────────────────────────────────────────────
 
-  const update = (idx: number, field: keyof VariantRow, value: any) => {
-    const target = { ...variants[idx] };
-    if (field === "isDefault") {
-      variants.forEach((v, i) => {
-        if (i === idx) {
-          updateField(i, { ...v, isDefault: true } as any);
-        } else if (v.isDefault) {
-          updateField(i, { ...v, isDefault: false } as any);
-        }
-      });
-    } else {
-      (target as any)[field] = value;
-      updateField(idx, target as any);
-    }
-  };
-
   const remove = (idx: number) => {
     removeField(idx);
-    const next = variants.filter((_, i) => i !== idx);
-    if (next.length > 0 && !next.some((v) => v.isDefault)) {
-      updateField(0, { ...next[0], isDefault: true } as any);
+    const current = (getValues("variants") as VariantRow[]) || [];
+    const remaining = current.filter((_, i) => i !== idx);
+    if (remaining.length > 0 && !remaining.some((v) => v.isDefault)) {
+      setValue("variants.0.isDefault", true, { shouldDirty: true });
     }
   };
 
@@ -935,12 +1141,12 @@ export default function VariationTab() {
                       <VariantCard
                         v={v}
                         idx={idx}
+                        productId={productId}
                         expanded={expandedIndex === idx || hasError}
                         hasError={hasError}
                         onToggle={() =>
                           setExpandedIndex(expandedIndex === idx ? null : idx)
                         }
-                        onUpdate={update}
                         onRemove={remove}
                       />
                       {hasError && errors.variants?.[idx]?.price && (

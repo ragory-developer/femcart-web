@@ -16,6 +16,8 @@ import {
   Star,
   Truck,
   Zap,
+  X,
+  AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -847,9 +849,20 @@ export default function ProductOverview({
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs sm:text-sm font-black truncate uppercase tracking-tight text-gray-900 dark:text-white">
-                      {selectedVariant.attributes?.map((a: any) => a.value).join(" / ") || "Standard"}
-                    </p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-xs sm:text-sm font-black truncate uppercase tracking-tight text-gray-900 dark:text-white">
+                        {selectedVariant.attributes?.map((a: any) => a.value).join(" / ") || "Standard"}
+                      </p>
+                      {(selectedVariant.stock ?? 0) <= 0 ? (
+                        <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/30 px-2 py-0.5 rounded uppercase tracking-wider border border-rose-200 dark:border-rose-800">
+                          Out of Stock
+                        </span>
+                      ) : (selectedVariant.stock ?? 0) <= 5 ? (
+                        <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 px-2 py-0.5 rounded uppercase tracking-wider border border-amber-200 dark:border-amber-800">
+                          Only {selectedVariant.stock} left!
+                        </span>
+                      ) : null}
+                    </div>
                     {(() => {
                       const vHasSpecial = isSpecialActive(
                         selectedVariant.specialPrice,
@@ -875,8 +888,18 @@ export default function ProductOverview({
                       );
                     })()}
                   </div>
-                  <div className="shrink-0 flex items-center justify-center text-green-500 bg-green-50 dark:bg-green-500/10 w-6 h-6 sm:w-8 sm:h-8 rounded-full">
-                    <Check size={14} strokeWidth={3} />
+                  <div
+                    className={`shrink-0 flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full ${
+                      (selectedVariant.stock ?? 0) <= 0
+                        ? "text-rose-500 bg-rose-50 dark:bg-rose-500/10"
+                        : "text-green-500 bg-green-50 dark:bg-green-500/10"
+                    }`}
+                  >
+                    {(selectedVariant.stock ?? 0) <= 0 ? (
+                      <X size={14} strokeWidth={3} />
+                    ) : (
+                      <Check size={14} strokeWidth={3} />
+                    )}
                   </div>
                 </div>
               </div>
@@ -919,7 +942,14 @@ export default function ProductOverview({
       case "sku":
         if (!showSku) return null;
 
-        const currentStock = selectedVariant ? selectedVariant.stock : stock;
+        const currentStock = selectedVariant
+          ? selectedVariant.stock
+          : productType === "VARIABLE"
+            ? enabledVariants.reduce(
+                (sum: number, v: any) => sum + (v.stock || 0),
+                0,
+              )
+            : stock;
         let stockColor = "red";
         if (currentStock > 10) stockColor = "emerald";
         else if (currentStock > 0) stockColor = "amber";
@@ -1022,7 +1052,10 @@ export default function ProductOverview({
                   Unit & Weight
                 </p>
                 <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 mt-0.5 truncate">
-                  {unit || "Piece"} {weight ? `(${weight})` : ""}
+                  {unit || "Piece"}{" "}
+                  {selectedVariant?.weight || weight
+                    ? `(${selectedVariant?.weight || weight})`
+                    : ""}
                 </p>
               </div>
             </div>

@@ -32,7 +32,7 @@ export default function Footer({
   newsletterSubtitle = "Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals delivered right to your inbox.",
   contactAddress = "123 Market St, San Francisco, CA",
   contactPhone = "+1 (800) 123-4567",
-  contactEmail = "support@femcart.com",
+  contactEmail = "support@famecart.com",
 }: FooterProps = {}) {
   const settings = useSettingsStore((state) => state.settings);
 
@@ -155,7 +155,7 @@ export default function Footer({
                   !settings.store_name ||
                   settings.store_name === "null" ||
                   settings.store_name === "undefined"
-                    ? "Femcart"
+                    ? "Famecart"
                     : settings.store_name
                 }
                 width={180}
@@ -301,7 +301,7 @@ export default function Footer({
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6 text-[14px] text-gray-500 font-medium">
           <p>
-            &copy; {new Date().getFullYear()} {settings.store_name || "Femcart"}
+            &copy; {new Date().getFullYear()} {settings.store_name || "Famecart"}
             . All rights reserved.
           </p>
 

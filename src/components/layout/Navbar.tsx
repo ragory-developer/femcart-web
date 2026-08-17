@@ -260,7 +260,7 @@ export default function Navbar({
                       !settings.store_name ||
                       settings.store_name === "null" ||
                       settings.store_name === "undefined"
-                        ? "Femcart"
+                        ? "Famecart"
                         : settings.store_name
                     }
                     width={180}

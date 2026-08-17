@@ -39,10 +39,30 @@ export default function AddToCartButton({
   // Allow adding main product when no variant is selected
   const isSelectionRequired = false;
   
+  // Check stock availability
+  const isOutOfStock = (() => {
+    if (selectedVariant) {
+      return (selectedVariant.stock ?? 0) <= 0;
+    }
+    if (product?.productType === "VARIABLE" && Array.isArray(product.variants)) {
+      const enabledVariants = product.variants.filter(
+        (v: any) => v.enabled !== false,
+      );
+      const totalStock = enabledVariants.reduce(
+        (sum: number, v: any) => sum + (v.stock || 0),
+        0,
+      );
+      return totalStock <= 0;
+    }
+    return (product?.stock ?? 0) <= 0;
+  })();
+
+  const isDisabled = isSelectionRequired || isOutOfStock;
+
   const isInCart = cartItems.some((item) => item.id === currentId);
 
   const handleBuyNow = (e: React.MouseEvent) => {
-    if (isSelectionRequired) {
+    if (isDisabled) {
       e.preventDefault();
       return;
     }
@@ -71,7 +91,7 @@ export default function AddToCartButton({
   };
 
   const handleToggleCart = () => {
-    if (isSelectionRequired) return;
+    if (isDisabled) return;
     
     if (isInCart) {
       removeFromCart(currentId);
@@ -111,9 +131,9 @@ export default function AddToCartButton({
           <button
             type="button"
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
-            disabled={quantity <= 1 || isSelectionRequired}
+            disabled={quantity <= 1 || isDisabled}
             className={`w-[clamp(44px,12vw,48px)] h-[clamp(44px,12vw,48px)] rounded-lg flex items-center justify-center transition-colors active:scale-95 ${
-              quantity <= 1 || isSelectionRequired
+              quantity <= 1 || isDisabled
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-500"
                 : "bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200"
             }`}
@@ -126,9 +146,9 @@ export default function AddToCartButton({
           <button
             type="button"
             onClick={() => setQuantity(quantity + 1)}
-            disabled={isSelectionRequired}
+            disabled={isDisabled}
             className={`w-[clamp(44px,12vw,48px)] h-[clamp(44px,12vw,48px)] rounded-lg flex items-center justify-center transition-colors active:scale-95 ${
-              isSelectionRequired
+              isDisabled
                 ? "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-500"
                 : "bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200"
             }`}
@@ -140,15 +160,17 @@ export default function AddToCartButton({
         <div className="flex flex-row gap-2 sm:gap-3 w-full">
           <motion.button
             type="button"
-            whileTap={{ scale: isSelectionRequired ? 1 : 0.95 }}
+            whileTap={{ scale: isDisabled ? 1 : 0.95 }}
             onClick={handleToggleCart}
-            disabled={isSelectionRequired}
+            disabled={isDisabled}
             className={`flex-1 min-h-[48px] sm:min-h-[56px] rounded-xl font-bold flex flex-row items-center justify-center gap-1.5 sm:gap-[clamp(0.25rem,1vw,0.5rem)] transition-all duration-300 shadow-sm text-[11px] sm:text-[clamp(0.875rem,2vw,1rem)] px-1 ${
               isInCart || added
                 ? "bg-rose-50 text-rose-600 border-2 border-rose-500 hover:bg-rose-100"
-                : isSelectionRequired
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed border-2 border-dashed border-gray-200 dark:bg-gray-900 dark:border-gray-800"
-                  : "bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                : isOutOfStock
+                  ? "bg-rose-50 text-rose-500 cursor-not-allowed border-2 border-rose-200 dark:bg-rose-950/20 dark:border-rose-900/30 font-bold"
+                  : isSelectionRequired
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed border-2 border-dashed border-gray-200 dark:bg-gray-900 dark:border-gray-800"
+                    : "bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 cursor-pointer"
             }`}
           >
             {isInCart || added ? (
@@ -156,6 +178,10 @@ export default function AddToCartButton({
                 <Check size={16} className="sm:w-5 sm:h-5 shrink-0" />
                 <span className="whitespace-nowrap">Remove from Cart</span>
               </>
+            ) : isOutOfStock ? (
+              <span className="leading-tight whitespace-nowrap text-rose-500">
+                {selectedVariant ? "Variant Out of Stock" : "Out of Stock"}
+              </span>
             ) : (
               <>
                 <ShoppingCart
@@ -170,16 +196,18 @@ export default function AddToCartButton({
           </motion.button>
 
           <Link
-            href={isSelectionRequired ? "#" : "/checkout"}
+            href={isDisabled ? "#" : "/checkout"}
             onClick={handleBuyNow}
             className={`flex-1 min-h-[48px] sm:min-h-[56px] rounded-xl font-bold flex flex-row items-center justify-center gap-1.5 sm:gap-[clamp(0.25rem,1vw,0.5rem)] transition-all duration-300 shadow-xl text-[11px] sm:text-[clamp(0.875rem,2vw,1rem)] px-1 ${
-              isSelectionRequired
-                ? "bg-gray-100 text-gray-400 cursor-not-allowed border shadow-none dark:bg-gray-900 dark:border-gray-800 pointer-events-none"
-                : `${buttonColor} text-white shadow-lg hover:-translate-y-0.5 active:scale-95`
+              isDisabled
+                ? "bg-gray-200 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed border shadow-none pointer-events-none"
+                : `${buttonColor} text-white shadow-lg hover:-translate-y-0.5 active:scale-95 cursor-pointer`
             }`}
           >
             <Zap size={16} className="fill-current sm:w-5 sm:h-5 shrink-0" />
-            <span className="leading-tight whitespace-nowrap">Buy Now</span>
+            <span className="leading-tight whitespace-nowrap">
+              {isOutOfStock ? "Unavailable" : "Buy Now"}
+            </span>
           </Link>
         </div>
       </div>

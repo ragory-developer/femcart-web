@@ -16,7 +16,7 @@ interface MobileSidebarProps {
 export default function MobileSidebar({
   isOpen,
   onClose,
-  storeName = "Femcart",
+  storeName = "Famecart",
 }: MobileSidebarProps) {
   const categories = useNavigationStore((state) => state.categories);
   const brands = useNavigationStore((state) => state.brands);

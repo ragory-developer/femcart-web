@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 export const metadata = {
-  title: "Sign In — Femcart",
+  title: "Sign In — Famecart",
   description:
-    "Sign in to your Femcart account with your mobile number and password.",
+    "Sign in to your Famecart account with your mobile number and password.",
 };
 
 export default function LoginPage() {
@@ -18,7 +18,7 @@ export default function LoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <Link href="/" className="flex justify-center mb-6 group">
           <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-1 group-hover:scale-[1.02] transition-transform origin-center">
-            Femcart
+            Famecart
           </h1>
         </Link>
         <h2 className="mt-2 text-center text-2xl font-bold tracking-tight text-slate-900 dark:text-white">

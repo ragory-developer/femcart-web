@@ -5,8 +5,9 @@ export const variantSchema = z.object({
   sku: z.string().optional(),
   price: z
     .string()
-    .min(1, "Price required")
-    .refine((val) => !isNaN(parseFloat(val)), "Invalid price"),
+    .optional()
+    .refine((val) => !val || !isNaN(parseFloat(val)), "Invalid price")
+    .default(""),
   specialPrice: z
     .string()
     .optional()
@@ -18,6 +19,7 @@ export const variantSchema = z.object({
     .optional()
     .refine((val) => !val || !isNaN(parseInt(val)), "Invalid stock number")
     .default("0"),
+  weight: z.string().optional(),
   image: z.string().optional(),
   isDefault: z.boolean().default(false),
   enabled: z.boolean().default(true),

@@ -73,7 +73,7 @@ export default function AdminSidebar({
         </div>
         {!collapsed && (
           <span className="text-xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 whitespace-nowrap">
-            Femcart
+            Famecart
           </span>
         )}
       </div>

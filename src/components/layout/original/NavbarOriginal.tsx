@@ -126,7 +126,7 @@ export default function NavbarOriginal({
               </div>
             )}
             <span className="text-lg sm:text-xl md:text-2xl font-black tracking-tight text-gray-900 truncate max-w-[120px] sm:max-w-[180px] md:max-w-[220px] font-display">
-              {settings.store_name || "Femcart"}
+              {settings.store_name || "Famecart"}
             </span>
           </Link>
 

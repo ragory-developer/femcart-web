@@ -183,16 +183,29 @@ export default function CreateProductPage() {
         body.productType = "VARIABLE";
         body.variants = data.variants.map((v, idx) => ({
           sku: v.sku || null,
-          price: parseFloat(v.price) || body.price,
-          specialPrice: v.specialPrice ? parseFloat(v.specialPrice) : null,
+          price:
+            v.price && !isNaN(parseFloat(v.price)) && v.price.trim() !== ""
+              ? parseFloat(v.price)
+              : body.price,
+          specialPrice:
+            v.specialPrice && !isNaN(parseFloat(v.specialPrice))
+              ? parseFloat(v.specialPrice)
+              : null,
           specialPriceStart: v.specialPriceStart || null,
           specialPriceEnd: v.specialPriceEnd || null,
-          stock: parseInt(v.stock) || 0,
+          stock: !isNaN(parseInt(v.stock)) ? parseInt(v.stock) : 0,
+          weight: v.weight || null,
           image: v.image || null,
-          isDefault: v.isDefault,
-          enabled: v.enabled,
-          attributes: v.attributes.filter((a: any) => a.value.trim()),
+          isDefault: v.isDefault ?? idx === 0,
+          enabled: v.enabled ?? true,
+          attributes: v.attributes.filter(
+            (a: any) => a.value && a.value.trim(),
+          ),
         }));
+        body.stock = body.variants.reduce((sum: number, v: any) => sum + (v.enabled !== false ? (v.stock || 0) : 0), 0);
+      } else {
+        body.productType = "SIMPLE";
+        body.variants = [];
       }
 
       const res = await fetch(`${API_URL}/api/products`, {
